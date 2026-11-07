@@ -1,0 +1,18 @@
+# Power BI project files that must never be published
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix
+*.abf
+
+# Secrets and local config
+.env
+*.key
+*secret*
+*credentials*
+
+# Python / OS
+__pycache__/
+*.pyc
+Thumbs.db
+desktop.ini
+.DS_Store
