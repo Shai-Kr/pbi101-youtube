@@ -61,4 +61,4 @@ Notes from making it:
 - Power BI Desktop sometimes asks to be reopened after the agent changes the model files: close it without saving, reopen the `.pbip`, refresh.
 
 
-Channel: https://www.youtube.com/@pbi101  |  https://pbi101.com
+🎬 **Watch the video: https://youtu.be/nTnlCX3A_UM**  |  Channel: https://www.youtube.com/@pbi101  |  https://pbi101.com
