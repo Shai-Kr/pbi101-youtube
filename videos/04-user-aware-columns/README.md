@@ -1,5 +1,7 @@
 # Power BI columns that adapt to each user (user-aware calculated columns)
 
+🎬 **Watch the video: https://youtu.be/m5PyxkMSYhI**
+
 Materials for the PBI101 video. A calculated column with **Expression Context = User Context** is calculated at
 query time, for whoever is looking: it can use `USERPRINCIPALNAME()`, `USERCULTURE()` and friends, and in Import mode
 it isn't stored. Everything here is synthetic demo data: **Aurora Outdoor**, a made-up outdoor gear company.

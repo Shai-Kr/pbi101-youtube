@@ -18,7 +18,7 @@ SELECT magic FROM your_data;
 |---|---|---|---|
 | 02 | [Power BI Object-Level Security (OLS) in Under 8 Min: Zero Errors](https://youtu.be/6vz2SXUkJ68) | OLS setup in TMDL view + 3 ways to fix the broken visuals (separate reports, field parameters + RLS, role detector) | [videos/02-ols-deep-dive](videos/02-ols-deep-dive) |
 | 03 | [AI Skills for Power BI: One Prompt Redesigned My Report](https://youtu.be/nTnlCX3A_UM) | Microsoft's Skills for Fabric in Claude Code: redesign a report with one prompt, make the model AI-ready, and see why business context matters (episode 1 of a series) | [videos/03-ai-skills-intro](videos/03-ai-skills-intro) |
-| 04 | Power BI User-Aware Calculated Columns: 3 Real Uses | Expression Context = User Context: a 'my region' column for every manager without RLS, labels in the viewer's language (and the slicer gotcha), sensitive values redacted per role, the zero-byte column | [videos/04-user-aware-columns](videos/04-user-aware-columns) |
+| 04 | [Power BI User-Aware Calculated Columns: 3 Real Uses](https://youtu.be/m5PyxkMSYhI) | Expression Context = User Context: a 'my region' column for every manager without RLS, labels in the viewer's language (and the slicer gotcha), sensitive values redacted per role, the zero-byte column | [videos/04-user-aware-columns](videos/04-user-aware-columns) |
 
 ## How to use the materials
 
