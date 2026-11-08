@@ -1,0 +1,74 @@
+/// Store dimension: one row per store location, with city, province and opening date. Filters both Sales and Tickets.
+table Stores
+	lineageTag: af72fecf-df7b-5472-93b9-b084d99cbedf
+
+	/// Store key used by the Sales and Tickets relationships. Not meaningful to users.
+	column StoreID
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		lineageTag: 31c29d7d-f428-5ff9-ba9a-8d7b56b1a611
+		summarizeBy: none
+		sourceColumn: StoreID
+
+	/// Store name (e.g. King West, Gastown). The default label for a store; use it when users ask about a store, location, shop or cafe by name.
+	column 'Store Name'
+		dataType: string
+		lineageTag: 74bc14b1-ecc1-5f1c-8521-27f5bf5585c5
+		isDefaultLabel
+		summarizeBy: none
+		sourceColumn: Store Name
+
+	/// City where the store is located (e.g. Toronto, Montreal). Use for city-level comparisons; a city can have several stores.
+	column City
+		dataType: string
+		lineageTag: 799655d2-a355-52ba-a234-7e034a21213e
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: City
+
+	/// Canadian province code of the store (e.g. ON = Ontario, QC = Quebec, BC = British Columbia, AB = Alberta). Use for regional comparisons.
+	column Province
+		dataType: string
+		lineageTag: def3bad6-088d-5bc9-91f7-bbcb746aeee5
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: Province
+
+	/// Date the store opened. Stores opened during the data period have partial history; take this into account when comparing periods or ranking stores on totals.
+	column 'Open Date'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 8ec41041-0579-59eb-93a3-026be0d5de23
+		summarizeBy: none
+		sourceColumn: Open Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Drill path from province to city to store.
+	hierarchy 'Store Location'
+		lineageTag: a39200c4-270b-43bf-8d23-dfa971d68bec
+
+		level Province
+			lineageTag: 9dd295e2-d61a-4ec1-b908-263c6fd1d4fb
+			column: Province
+
+		level City
+			lineageTag: b0d384c1-8c75-4485-8244-17322efeafe4
+			column: City
+
+		level Store
+			lineageTag: fc5712a4-2dc2-44dd-8650-ef83a3c303fb
+			column: 'Store Name'
+
+	partition Stores = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/stores.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"StoreID", Int64.Type}, {"Store Name", type text}, {"City", type text}, {"Province", type text}, {"Open Date", type date}}, "en-US")
+				in
+					Typed
+

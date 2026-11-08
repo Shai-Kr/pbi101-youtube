@@ -1,0 +1,94 @@
+/// Calendar table: one row per day, contiguous, marked as the model's date table. Use it for all time filtering and grouping of sales and tickets.
+table Date
+	lineageTag: 6244a979-b6d2-58a0-bc60-8a8e57b5e760
+	dataCategory: Time
+
+	/// Calendar day. The primary date for every sales and ticket question; there is no separate order or ship date.
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: 9fb075d8-39e7-5942-8ef8-bf0ab095d3a4
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Calendar year number (e.g. 2025). Use to filter or group by year. Calendar year, not a fiscal year.
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 1764233d-5c84-54f1-a803-8727ba74b05f
+		summarizeBy: none
+		sourceColumn: Year
+
+	/// Month as a date (first day of the month), shown as 'Jan 2025'. Use for monthly trends over time; it keeps months of different years apart.
+	column Month
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: 9895a543-1bde-5958-a406-d782136f5ff1
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Month name (Jan to Dec), sorted by month number. Combines the same month across years; use for seasonality, and Month for a timeline.
+	column 'Month Name'
+		dataType: string
+		lineageTag: 773b8a01-4f97-513d-bb8d-dcd885e066ed
+		summarizeBy: none
+		sourceColumn: Month Name
+		sortByColumn: 'Month No'
+
+	/// Month number 1 to 12. Sort order for Month Name.
+	column 'Month No'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4f1468e5-f2a3-569a-afb1-4503ee1cff4e
+		summarizeBy: none
+		sourceColumn: Month No
+
+	/// Day of week (Mon to Sun), sorted Monday first. Use for weekday vs weekend and day-of-week patterns.
+	column Weekday
+		dataType: string
+		lineageTag: e5946044-af45-5428-a417-7dbbd2f23e09
+		summarizeBy: none
+		sourceColumn: Weekday
+		sortByColumn: 'Weekday No'
+
+	/// Day-of-week number, 1 = Monday to 7 = Sunday. Sort order for Weekday.
+	column 'Weekday No'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6228654d-9ae0-5b15-b68a-67ea44f416ed
+		summarizeBy: none
+		sourceColumn: Weekday No
+
+	/// Drill path from year to month to day.
+	hierarchy Calendar
+		lineageTag: be332f87-9d8b-4198-a750-4eda881269d9
+
+		level Year
+			lineageTag: b6c208ef-da3c-47a1-9f04-31fc8e7b6149
+			column: Year
+
+		level Month
+			lineageTag: 4aa93a92-04a3-4648-8740-59622abf3cbc
+			column: Month
+
+		level Day
+			lineageTag: 56e5bdb3-699d-4e27-a612-e858a83841b5
+			column: Date
+
+	partition Date = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/date.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Date", type date}, {"Year", Int64.Type}, {"Month", type date}, {"Month Name", type text}, {"Month No", Int64.Type}, {"Weekday", type text}, {"Weekday No", Int64.Type}}, "en-US")
+				in
+					Typed
+

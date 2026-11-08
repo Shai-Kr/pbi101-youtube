@@ -1,0 +1,59 @@
+/// Product dimension: one row per menu item, with category and list price. Filters Sales only; Tickets have no product detail.
+table Products
+	lineageTag: 8caab66d-00b0-5eb3-96ad-4b03ee69f4e5
+
+	/// Product key used by the Sales relationship. Not meaningful to users.
+	column ProductID
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		lineageTag: 7fbb3d9f-5094-5145-95bd-da51282f34da
+		summarizeBy: none
+		sourceColumn: ProductID
+
+	/// Menu item name (e.g. Latte, Cold Brew, Butter Croissant). The default label for a product; use it for questions about a product, item or drink by name.
+	column Product
+		dataType: string
+		lineageTag: af0dc52e-1327-56fd-bb08-11e3fe6519f5
+		isDefaultLabel
+		summarizeBy: none
+		sourceColumn: Product
+
+	/// Product category: Espresso Bar, Brewed & Cold, Tea & More, Bakery & Food or Retail. Use for category, product line or menu section questions.
+	column Category
+		dataType: string
+		lineageTag: a841e047-30dc-56d1-9e15-27043dd2ca52
+		summarizeBy: none
+		sourceColumn: Category
+
+	/// Standard menu price for one unit of the product. Not the realized selling price: for price actually achieved, divide Total Sales by Units.
+	column 'List Price'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 226a9d34-6f87-56ff-b493-b1cf1da77758
+		summarizeBy: none
+		sourceColumn: List Price
+
+	/// Drill path from category to product.
+	hierarchy 'Product Category'
+		lineageTag: c6798009-475a-4498-9f38-723811b28993
+
+		level Category
+			lineageTag: 1dac5829-9ed8-42fb-8c42-70b3720ca735
+			column: Category
+
+		level Product
+			lineageTag: 0b55a88a-16e9-4451-8a3a-bfa5d7b8b545
+			column: Product
+
+	partition Products = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/products.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"ProductID", Int64.Type}, {"Product", type text}, {"Category", type text}, {"List Price", type number}}, "en-US")
+				in
+					Typed
+

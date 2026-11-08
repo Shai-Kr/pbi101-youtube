@@ -1,0 +1,82 @@
+table Sales
+	lineageTag: a408735e-de6a-5c62-83d6-8cbae1daccd4
+
+	measure 'Total Sales' = SUM(Sales[Net Sales])
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 3a7c6d77-2a7a-5b0e-82b4-0a788770643d
+
+	measure 'Total COGS' = SUM(Sales[COGS])
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: c116b7bd-6f0c-53a0-a19f-260d464c94b3
+
+	measure GM = [Total Sales] - [Total COGS]
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: a8359706-5a7c-5d22-bb8d-47503025558c
+
+	measure 'GM %' = DIVIDE([GM], [Total Sales])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 713ca74e-6d99-5af5-927d-c237e89b9102
+
+	measure Units = SUM(Sales[Qty])
+		formatString: #,0
+		lineageTag: 5ff8a3ed-e9b4-59f8-a36e-6dd60845b23e
+
+	column Date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: aea6e6ff-35e3-578c-806e-ab1ee72a69b8
+		summarizeBy: none
+		sourceColumn: Date
+
+	column StoreID
+		dataType: int64
+		formatString: 0
+		lineageTag: 80e51f5a-a7b3-56fe-9e5c-0a9697b892ca
+		summarizeBy: none
+		sourceColumn: StoreID
+
+	column ProductID
+		dataType: int64
+		formatString: 0
+		lineageTag: 9f738f66-4cb2-5ad5-b27d-5f7f0541cca8
+		summarizeBy: none
+		sourceColumn: ProductID
+
+	column ChannelID
+		dataType: int64
+		formatString: 0
+		lineageTag: 319e65df-e1f3-54bd-a4a8-fa21b3cac9f5
+		summarizeBy: none
+		sourceColumn: ChannelID
+
+	column Qty
+		dataType: int64
+		formatString: #,0
+		lineageTag: 77a3a757-d023-5716-9569-7f06d5b6279d
+		summarizeBy: sum
+		sourceColumn: Qty
+
+	column 'Net Sales'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 1b4787ad-8abd-5262-aa89-cd2cca8e9d02
+		summarizeBy: sum
+		sourceColumn: Net Sales
+
+	column COGS
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 59aaade2-f86d-5af4-99a4-f0cb3d5e5d56
+		summarizeBy: sum
+		sourceColumn: COGS
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/sales.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Date", type date}, {"StoreID", Int64.Type}, {"ProductID", Int64.Type}, {"ChannelID", Int64.Type}, {"Qty", Int64.Type}, {"Net Sales", type number}, {"COGS", type number}}, "en-US")
+				in
+					Typed
+

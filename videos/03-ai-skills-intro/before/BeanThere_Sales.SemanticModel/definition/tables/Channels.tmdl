@@ -1,0 +1,27 @@
+table Channels
+	lineageTag: 89a42a8b-ceff-5e2c-a918-98cb01f3a527
+
+	column ChannelID
+		dataType: int64
+		isKey
+		formatString: 0
+		lineageTag: d9784d78-d37b-5031-b68f-6d267e6da53f
+		summarizeBy: none
+		sourceColumn: ChannelID
+
+	column Channel
+		dataType: string
+		lineageTag: 8c9d76a7-9044-58c6-a629-595a08eabe7d
+		summarizeBy: none
+		sourceColumn: Channel
+
+	partition Channels = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/channels.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"ChannelID", Int64.Type}, {"Channel", type text}}, "en-US")
+				in
+					Typed
+

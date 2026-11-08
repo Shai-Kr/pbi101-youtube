@@ -17,6 +17,7 @@ SELECT magic FROM your_data;
 | # | Video | Topic | Materials |
 |---|---|---|---|
 | 02 | [Power BI Object-Level Security (OLS) in Under 8 Min: Zero Errors](https://youtu.be/6vz2SXUkJ68) | OLS setup in TMDL view + 3 ways to fix the broken visuals (separate reports, field parameters + RLS, role detector) | [videos/02-ols-deep-dive](videos/02-ols-deep-dive) |
+| 03 | AI Skills for Power BI: One Prompt Redesigned My Report | Microsoft's Skills for Fabric in Claude Code: redesign a report with one prompt, make the model AI-ready, and see why business context matters (episode 1 of a series) | [videos/03-ai-skills-intro](videos/03-ai-skills-intro) |
 
 ## How to use the materials
 

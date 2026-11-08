@@ -1,0 +1,63 @@
+table Date
+	lineageTag: 6244a979-b6d2-58a0-bc60-8a8e57b5e760
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: 9fb075d8-39e7-5942-8ef8-bf0ab095d3a4
+		summarizeBy: none
+		sourceColumn: Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 1764233d-5c84-54f1-a803-8727ba74b05f
+		summarizeBy: none
+		sourceColumn: Year
+
+	column Month
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: 9895a543-1bde-5958-a406-d782136f5ff1
+		summarizeBy: none
+		sourceColumn: Month
+
+	column 'Month Name'
+		dataType: string
+		sortByColumn: 'Month No'
+		lineageTag: 773b8a01-4f97-513d-bb8d-dcd885e066ed
+		summarizeBy: none
+		sourceColumn: Month Name
+
+	column 'Month No'
+		dataType: int64
+		formatString: 0
+		lineageTag: 4f1468e5-f2a3-569a-afb1-4503ee1cff4e
+		summarizeBy: none
+		sourceColumn: Month No
+
+	column Weekday
+		dataType: string
+		sortByColumn: 'Weekday No'
+		lineageTag: e5946044-af45-5428-a417-7dbbd2f23e09
+		summarizeBy: none
+		sourceColumn: Weekday
+
+	column 'Weekday No'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6228654d-9ae0-5b15-b68a-67ea44f416ed
+		summarizeBy: none
+		sourceColumn: Weekday No
+
+	partition Date = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/date.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Date", type date}, {"Year", Int64.Type}, {"Month", type date}, {"Month Name", type text}, {"Month No", Int64.Type}, {"Weekday", type text}, {"Weekday No", Int64.Type}}, "en-US")
+				in
+					Typed
+

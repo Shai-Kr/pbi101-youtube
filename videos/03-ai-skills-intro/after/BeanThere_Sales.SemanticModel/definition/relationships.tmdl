@@ -1,0 +1,28 @@
+relationship Sales_Stores
+	fromColumn: Sales.StoreID
+	toColumn: Stores.StoreID
+
+relationship Sales_Products
+	fromColumn: Sales.ProductID
+	toColumn: Products.ProductID
+
+relationship Sales_Channels
+	fromColumn: Sales.ChannelID
+	toColumn: Channels.ChannelID
+
+relationship Sales_Date
+	fromColumn: Sales.Date
+	toColumn: Date.Date
+
+relationship Tickets_Stores
+	fromColumn: Tickets.StoreID
+	toColumn: Stores.StoreID
+
+relationship Tickets_Channels
+	fromColumn: Tickets.ChannelID
+	toColumn: Channels.ChannelID
+
+relationship Tickets_Date
+	fromColumn: Tickets.Date
+	toColumn: Date.Date
+

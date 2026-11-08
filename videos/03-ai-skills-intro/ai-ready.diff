@@ -1,0 +1,503 @@
+diff --git a/BeanThere_Sales.SemanticModel/definition.pbism b/BeanThere_Sales.SemanticModel/definition.pbism
+index 4924776..7490030 100644
+--- a/BeanThere_Sales.SemanticModel/definition.pbism
++++ b/BeanThere_Sales.SemanticModel/definition.pbism
+@@ -1,5 +1,7 @@
+ {
+   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/semanticModel/definitionProperties/1.0.0/schema.json",
+   "version": "4.2",
+-  "settings": {}
++  "settings": {
++    "qnaEnabled": true
++  }
+ }
+\ No newline at end of file
+diff --git a/BeanThere_Sales.SemanticModel/definition/model.tmdl b/BeanThere_Sales.SemanticModel/definition/model.tmdl
+index ed53d3f..f7339cb 100644
+--- a/BeanThere_Sales.SemanticModel/definition/model.tmdl
++++ b/BeanThere_Sales.SemanticModel/definition/model.tmdl
+@@ -1,6 +1,7 @@
+ model Model
+ 	culture: en-US
+ 	defaultPowerBIDataSourceVersion: powerBI_V3
++	discourageImplicitMeasures
+ 	sourceQueryCulture: en-US
+ 	dataAccessOptions
+ 		legacyRedirects
+diff --git a/BeanThere_Sales.SemanticModel/definition/tables/Channels.tmdl b/BeanThere_Sales.SemanticModel/definition/tables/Channels.tmdl
+index 1cc7821..78ff514 100644
+--- a/BeanThere_Sales.SemanticModel/definition/tables/Channels.tmdl
++++ b/BeanThere_Sales.SemanticModel/definition/tables/Channels.tmdl
+@@ -1,14 +1,18 @@
++/// Order channel dimension: how the customer ordered (In-store, Mobile Order or Delivery). Filters both Sales and Tickets.
+ table Channels
+ 	lineageTag: 89a42a8b-ceff-5e2c-a918-98cb01f3a527
+ 
++	/// Channel key used by the Sales and Tickets relationships. Not meaningful to users.
+ 	column ChannelID
+ 		dataType: int64
++		isHidden
+ 		isKey
+ 		formatString: 0
+ 		lineageTag: d9784d78-d37b-5031-b68f-6d267e6da53f
+ 		summarizeBy: none
+ 		sourceColumn: ChannelID
+ 
++	/// Order channel: In-store, Mobile Order or Delivery. Use for channel mix and in-store vs mobile vs delivery comparisons.
+ 	column Channel
+ 		dataType: string
+ 		lineageTag: 8c9d76a7-9044-58c6-a629-595a08eabe7d
+diff --git a/BeanThere_Sales.SemanticModel/definition/tables/Date.tmdl b/BeanThere_Sales.SemanticModel/definition/tables/Date.tmdl
+index 4fd2c90..09e4ab7 100644
+--- a/BeanThere_Sales.SemanticModel/definition/tables/Date.tmdl
++++ b/BeanThere_Sales.SemanticModel/definition/tables/Date.tmdl
+@@ -1,6 +1,9 @@
++/// Calendar table: one row per day, contiguous, marked as the model's date table. Use it for all time filtering and grouping of sales and tickets.
+ table Date
+ 	lineageTag: 6244a979-b6d2-58a0-bc60-8a8e57b5e760
++	dataCategory: Time
+ 
++	/// Calendar day. The primary date for every sales and ticket question; there is no separate order or ship date.
+ 	column Date
+ 		dataType: dateTime
+ 		isKey
+@@ -11,6 +14,7 @@ table Date
+ 
+ 		annotation UnderlyingDateTimeDataType = Date
+ 
++	/// Calendar year number (e.g. 2025). Use to filter or group by year. Calendar year, not a fiscal year.
+ 	column Year
+ 		dataType: int64
+ 		formatString: 0
+@@ -18,6 +22,7 @@ table Date
+ 		summarizeBy: none
+ 		sourceColumn: Year
+ 
++	/// Month as a date (first day of the month), shown as 'Jan 2025'. Use for monthly trends over time; it keeps months of different years apart.
+ 	column Month
+ 		dataType: dateTime
+ 		formatString: mmm yyyy
+@@ -27,6 +32,7 @@ table Date
+ 
+ 		annotation UnderlyingDateTimeDataType = Date
+ 
++	/// Month name (Jan to Dec), sorted by month number. Combines the same month across years; use for seasonality, and Month for a timeline.
+ 	column 'Month Name'
+ 		dataType: string
+ 		lineageTag: 773b8a01-4f97-513d-bb8d-dcd885e066ed
+@@ -34,13 +40,16 @@ table Date
+ 		sourceColumn: Month Name
+ 		sortByColumn: 'Month No'
+ 
++	/// Month number 1 to 12. Sort order for Month Name.
+ 	column 'Month No'
+ 		dataType: int64
++		isHidden
+ 		formatString: 0
+ 		lineageTag: 4f1468e5-f2a3-569a-afb1-4503ee1cff4e
+ 		summarizeBy: none
+ 		sourceColumn: Month No
+ 
++	/// Day of week (Mon to Sun), sorted Monday first. Use for weekday vs weekend and day-of-week patterns.
+ 	column Weekday
+ 		dataType: string
+ 		lineageTag: e5946044-af45-5428-a417-7dbbd2f23e09
+@@ -48,13 +57,27 @@ table Date
+ 		sourceColumn: Weekday
+ 		sortByColumn: 'Weekday No'
+ 
++	/// Day-of-week number, 1 = Monday to 7 = Sunday. Sort order for Weekday.
+ 	column 'Weekday No'
+ 		dataType: int64
++		isHidden
+ 		formatString: 0
+ 		lineageTag: 6228654d-9ae0-5b15-b68a-67ea44f416ed
+ 		summarizeBy: none
+ 		sourceColumn: Weekday No
+ 
++	/// Drill path from year to month to day.
++	hierarchy Calendar
++
++		level Year
++			column: Year
++
++		level Month
++			column: Month
++
++		level Day
++			column: Date
++
+ 	partition Date = m
+ 		mode: import
+ 		source =
+diff --git a/BeanThere_Sales.SemanticModel/definition/tables/Products.tmdl b/BeanThere_Sales.SemanticModel/definition/tables/Products.tmdl
+index eb1d9b3..6b03a32 100644
+--- a/BeanThere_Sales.SemanticModel/definition/tables/Products.tmdl
++++ b/BeanThere_Sales.SemanticModel/definition/tables/Products.tmdl
+@@ -1,26 +1,33 @@
++/// Product dimension: one row per menu item, with category and list price. Filters Sales only; Tickets have no product detail.
+ table Products
+ 	lineageTag: 8caab66d-00b0-5eb3-96ad-4b03ee69f4e5
+ 
++	/// Product key used by the Sales relationship. Not meaningful to users.
+ 	column ProductID
+ 		dataType: int64
++		isHidden
+ 		isKey
+ 		formatString: 0
+ 		lineageTag: 7fbb3d9f-5094-5145-95bd-da51282f34da
+ 		summarizeBy: none
+ 		sourceColumn: ProductID
+ 
++	/// Menu item name (e.g. Latte, Cold Brew, Butter Croissant). The default label for a product; use it for questions about a product, item or drink by name.
+ 	column Product
+ 		dataType: string
++		isDefaultLabel
+ 		lineageTag: af0dc52e-1327-56fd-bb08-11e3fe6519f5
+ 		summarizeBy: none
+ 		sourceColumn: Product
+ 
++	/// Product category: Espresso Bar, Brewed & Cold, Tea & More, Bakery & Food or Retail. Use for category, product line or menu section questions.
+ 	column Category
+ 		dataType: string
+ 		lineageTag: a841e047-30dc-56d1-9e15-27043dd2ca52
+ 		summarizeBy: none
+ 		sourceColumn: Category
+ 
++	/// Standard menu price for one unit of the product. Not the realized selling price: for price actually achieved, divide Total Sales by Units.
+ 	column 'List Price'
+ 		dataType: double
+ 		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+@@ -28,6 +35,15 @@ table Products
+ 		summarizeBy: none
+ 		sourceColumn: List Price
+ 
++	/// Drill path from category to product.
++	hierarchy 'Product Category'
++
++		level Category
++			column: Category
++
++		level Product
++			column: Product
++
+ 	partition Products = m
+ 		mode: import
+ 		source =
+diff --git a/BeanThere_Sales.SemanticModel/definition/tables/Sales.tmdl b/BeanThere_Sales.SemanticModel/definition/tables/Sales.tmdl
+index e014340..e9ab3c2 100644
+--- a/BeanThere_Sales.SemanticModel/definition/tables/Sales.tmdl
++++ b/BeanThere_Sales.SemanticModel/definition/tables/Sales.tmdl
+@@ -1,28 +1,41 @@
++/// Sales fact: one row per day, store, product and channel. Use its measures for revenue, cost, margin and units sold. Filter by Date, Stores, Products and Channels.
+ table Sales
+ 	lineageTag: a408735e-de6a-5c62-83d6-8cbae1daccd4
+ 
++	/// Net sales revenue. Default measure for questions about sales or revenue. Works by date, store, product, category and channel. Sum of Sales[Net Sales].
+ 	measure 'Total Sales' = SUM(Sales[Net Sales])
+ 		formatString: \$#,0;(\$#,0);\$#,0
++		displayFolder: Revenue
+ 		lineageTag: 3a7c6d77-2a7a-5b0e-82b4-0a788770643d
+ 
++	/// Total COGS (cost of goods sold) for the items sold, in currency. Use for questions about cost. Sum of Sales[COGS].
+ 	measure 'Total COGS' = SUM(Sales[COGS])
+ 		formatString: \$#,0;(\$#,0);\$#,0
++		displayFolder: Margin
+ 		lineageTag: c116b7bd-6f0c-53a0-a19f-260d464c94b3
+ 
++	/// GM = gross margin (gross profit) in currency: Total Sales minus Total COGS. Use for 'gross margin', 'gross profit' or 'margin dollars'. Not General Manager. For the rate use GM %.
+ 	measure GM = [Total Sales] - [Total COGS]
+ 		formatString: \$#,0;(\$#,0);\$#,0
++		displayFolder: Margin
+ 		lineageTag: a8359706-5a7c-5d22-bb8d-47503025558c
+ 
++	/// GM % = gross margin percentage: GM divided by Total Sales. Use for 'margin %', 'margin rate' or 'profitability'. Higher is better. A ratio; never sum or average it across rows.
+ 	measure 'GM %' = DIVIDE([GM], [Total Sales])
+ 		formatString: 0.0%;-0.0%;0.0%
++		displayFolder: Margin
+ 		lineageTag: 713ca74e-6d99-5af5-927d-c237e89b9102
+ 
++	/// Number of items sold. Use for 'units', 'quantity', 'items sold' or 'volume'. Counts items, not transactions; for transactions use Tickets[Ticket Count]. Sum of Sales[Qty].
+ 	measure Units = SUM(Sales[Qty])
+ 		formatString: #,0
++		displayFolder: Volume
+ 		lineageTag: 5ff8a3ed-e9b4-59f8-a36e-6dd60845b23e
+ 
++	/// Sales date (day grain). Relates to Date[Date]; use the Date table for time filtering and grouping.
+ 	column Date
+ 		dataType: dateTime
++		isHidden
+ 		formatString: Short Date
+ 		lineageTag: aea6e6ff-35e3-578c-806e-ab1ee72a69b8
+ 		summarizeBy: none
+@@ -30,43 +43,55 @@ table Sales
+ 
+ 		annotation UnderlyingDateTimeDataType = Date
+ 
++	/// Store key. Relates to Stores[StoreID]; use Stores columns to filter by store.
+ 	column StoreID
+ 		dataType: int64
++		isHidden
+ 		formatString: 0
+ 		lineageTag: 80e51f5a-a7b3-56fe-9e5c-0a9697b892ca
+ 		summarizeBy: none
+ 		sourceColumn: StoreID
+ 
++	/// Product key. Relates to Products[ProductID]; use Products columns to filter by product.
+ 	column ProductID
+ 		dataType: int64
++		isHidden
+ 		formatString: 0
+ 		lineageTag: 9f738f66-4cb2-5ad5-b27d-5f7f0541cca8
+ 		summarizeBy: none
+ 		sourceColumn: ProductID
+ 
++	/// Channel key. Relates to Channels[ChannelID]; use Channels[Channel] to filter by channel.
+ 	column ChannelID
+ 		dataType: int64
++		isHidden
+ 		formatString: 0
+ 		lineageTag: 319e65df-e1f3-54bd-a4a8-fa21b3cac9f5
+ 		summarizeBy: none
+ 		sourceColumn: ChannelID
+ 
++	/// Quantity of items sold on the row. Use the Units measure instead.
+ 	column Qty
+ 		dataType: int64
++		isHidden
+ 		formatString: #,0
+ 		lineageTag: 77a3a757-d023-5716-9569-7f06d5b6279d
+ 		summarizeBy: sum
+ 		sourceColumn: Qty
+ 
++	/// Net sales amount for the row. Use the Total Sales measure instead.
+ 	column 'Net Sales'
+ 		dataType: double
++		isHidden
+ 		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+ 		lineageTag: 1b4787ad-8abd-5262-aa89-cd2cca8e9d02
+ 		summarizeBy: sum
+ 		sourceColumn: Net Sales
+ 
++	/// Cost of goods sold (COGS) amount for the row. Use the Total COGS measure instead.
+ 	column COGS
+ 		dataType: double
++		isHidden
+ 		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+ 		lineageTag: 59aaade2-f86d-5af4-99a4-f0cb3d5e5d56
+ 		summarizeBy: sum
+diff --git a/BeanThere_Sales.SemanticModel/definition/tables/Stores.tmdl b/BeanThere_Sales.SemanticModel/definition/tables/Stores.tmdl
+index 2063c23..46a06e6 100644
+--- a/BeanThere_Sales.SemanticModel/definition/tables/Stores.tmdl
++++ b/BeanThere_Sales.SemanticModel/definition/tables/Stores.tmdl
+@@ -1,32 +1,42 @@
++/// Store dimension: one row per store location, with city, province and opening date. Filters both Sales and Tickets.
+ table Stores
+ 	lineageTag: af72fecf-df7b-5472-93b9-b084d99cbedf
+ 
++	/// Store key used by the Sales and Tickets relationships. Not meaningful to users.
+ 	column StoreID
+ 		dataType: int64
++		isHidden
+ 		isKey
+ 		formatString: 0
+ 		lineageTag: 31c29d7d-f428-5ff9-ba9a-8d7b56b1a611
+ 		summarizeBy: none
+ 		sourceColumn: StoreID
+ 
++	/// Store name (e.g. King West, Gastown). The default label for a store; use it when users ask about a store, location, shop or cafe by name.
+ 	column 'Store Name'
+ 		dataType: string
++		isDefaultLabel
+ 		lineageTag: 74bc14b1-ecc1-5f1c-8521-27f5bf5585c5
+ 		summarizeBy: none
+ 		sourceColumn: Store Name
+ 
++	/// City where the store is located (e.g. Toronto, Montreal). Use for city-level comparisons; a city can have several stores.
+ 	column City
+ 		dataType: string
++		dataCategory: City
+ 		lineageTag: 799655d2-a355-52ba-a234-7e034a21213e
+ 		summarizeBy: none
+ 		sourceColumn: City
+ 
++	/// Canadian province code of the store (e.g. ON = Ontario, QC = Quebec, BC = British Columbia, AB = Alberta). Use for regional comparisons.
+ 	column Province
+ 		dataType: string
++		dataCategory: StateOrProvince
+ 		lineageTag: def3bad6-088d-5bc9-91f7-bbcb746aeee5
+ 		summarizeBy: none
+ 		sourceColumn: Province
+ 
++	/// Date the store opened. Stores opened during the data period have partial history; take this into account when comparing periods or ranking stores on totals.
+ 	column 'Open Date'
+ 		dataType: dateTime
+ 		formatString: Short Date
+@@ -36,6 +46,18 @@ table Stores
+ 
+ 		annotation UnderlyingDateTimeDataType = Date
+ 
++	/// Drill path from province to city to store.
++	hierarchy 'Store Location'
++
++		level Province
++			column: Province
++
++		level City
++			column: City
++
++		level Store
++			column: 'Store Name'
++
+ 	partition Stores = m
+ 		mode: import
+ 		source =
+diff --git a/BeanThere_Sales.SemanticModel/definition/tables/Tickets.tmdl b/BeanThere_Sales.SemanticModel/definition/tables/Tickets.tmdl
+index c86a409..70851d4 100644
+--- a/BeanThere_Sales.SemanticModel/definition/tables/Tickets.tmdl
++++ b/BeanThere_Sales.SemanticModel/definition/tables/Tickets.tmdl
+@@ -1,16 +1,23 @@
++/// Tickets fact: number of tickets (transactions) per day, store and channel. Has no product detail, so it cannot be filtered by Products. Use for traffic and average ticket.
+ table Tickets
+ 	lineageTag: c1104f99-a381-572a-9083-7ab2853e366d
+ 
++	/// Number of tickets (transactions). Use for 'transactions', 'tickets', 'traffic' or 'customer count'. Works by date, store and channel; not by product or category.
+ 	measure 'Ticket Count' = SUM(Tickets[Tickets])
+ 		formatString: #,0
++		displayFolder: Transactions
+ 		lineageTag: 18b901e4-7e77-5918-a8d0-e3118dc1e918
+ 
++	/// Avg Ticket = average ticket: Total Sales divided by Ticket Count, i.e. average spend per transaction. Use by date, store or channel. Not meaningful by product or category.
+ 	measure 'Avg Ticket' = DIVIDE([Total Sales], [Ticket Count])
+ 		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
++		displayFolder: Transactions
+ 		lineageTag: 7c2c8c61-9742-5404-aa42-38b2cf5ef065
+ 
++	/// Ticket date (day grain). Relates to Date[Date]; use the Date table for time filtering and grouping.
+ 	column Date
+ 		dataType: dateTime
++		isHidden
+ 		formatString: Short Date
+ 		lineageTag: 66c39358-9397-5a91-bdac-8c8a89a8b84f
+ 		summarizeBy: none
+@@ -18,22 +25,28 @@ table Tickets
+ 
+ 		annotation UnderlyingDateTimeDataType = Date
+ 
++	/// Store key. Relates to Stores[StoreID]; use Stores columns to filter by store.
+ 	column StoreID
+ 		dataType: int64
++		isHidden
+ 		formatString: 0
+ 		lineageTag: 2bd198eb-07e5-5997-8cf1-85d8c6a2dfe1
+ 		summarizeBy: none
+ 		sourceColumn: StoreID
+ 
++	/// Channel key. Relates to Channels[ChannelID]; use Channels[Channel] to filter by channel.
+ 	column ChannelID
+ 		dataType: int64
++		isHidden
+ 		formatString: 0
+ 		lineageTag: 9c808fca-519a-5615-9590-db09803921d0
+ 		summarizeBy: none
+ 		sourceColumn: ChannelID
+ 
++	/// Number of tickets on the row. Use the Ticket Count measure instead.
+ 	column Tickets
+ 		dataType: int64
++		isHidden
+ 		formatString: #,0
+ 		lineageTag: a03ff8b9-09fa-5a58-8c76-609493809ccc
+ 		summarizeBy: sum
+diff --git a/docs/prep-data-for-ai.md b/docs/prep-data-for-ai.md
+new file mode 100644
+index 0000000..a97b84c
+--- /dev/null
++++ b/docs/prep-data-for-ai.md
+@@ -0,0 +1,86 @@
++# BeanThere_Sales: Prep data for AI drafts
++
++These are drafts for the parts of AI readiness that Power BI keeps in its own
++**Prep data for AI** experience (Home > Prep data for AI in Desktop or the
++service). Review them, adjust the wording to your business language, and paste
++them in there. The model metadata (descriptions, hidden columns, display
++folders, hierarchies, date table, Q&A on) is already in the TMDL files.
++
++Items marked **[confirm]** are interpretations, not facts from the data.
++Items marked **[pending]** wait for the business rules you said you'll provide.
++
++## 1. AI instructions (paste into "Add AI instructions")
++
++```text
++BeanThere Coffee Co. sales model: 8 stores in 4 Canadian cities, daily data from July 2024 to October 2026.
++
++Metric routing
++- "Sales" or "revenue" = [Total Sales].
++- GM means gross margin, never General Manager. Gross margin or gross profit in dollars = [GM]; margin %, margin rate or profitability = [GM %].
++- "Cost" or "COGS" = [Total COGS].
++- Transactions, tickets, traffic or customer count = [Ticket Count]. Average ticket, average order value or spend per visit = [Avg Ticket].
++- Units, items sold or quantity = [Units]. Units count items, not transactions; do not mix them with [Ticket Count].
++
++Grain rules
++- The Tickets table has no product detail. Never break [Ticket Count] or [Avg Ticket] down by Products[Product] or Products[Category]; for product questions use [Total Sales], [Units], [GM] and [GM %].
++- [GM %] and [Avg Ticket] are ratios: never sum or average them across rows, always evaluate the measure at the requested level.
++
++Time
++- Use the Date table for all time questions. 2024 (Jul-Dec) and 2026 (Jan-Oct) are partial years: when comparing years, compare the same months and say which months were compared.
++- [pending] Fiscal year definition: add here once confirmed.
++
++Stores
++- Beltline opened in September 2025 and Union Station in March 2026, so their totals cover fewer months. When ranking stores on totals, mention this; for fair comparisons prefer [Avg Ticket] or monthly averages.
++- "Location", "cafe" or "shop" = Stores[Store Name]; regional questions use Stores[City] or Stores[Province] (ON, QC, BC, AB).
++
++Channels
++- Channels[Channel] is In-store, Mobile Order or Delivery.
++- [confirm] "Digital" orders = Mobile Order + Delivery.
++```
++
++## 2. Synonyms (AI data schema / Q&A setup > Synonyms)
++
++| Object | Suggested synonyms |
++|---|---|
++| Sales[Total Sales] | sales, revenue, net sales, sales dollars, turnover |
++| Sales[Total COGS] | COGS, cost of goods sold, cost of sales, product cost |
++| Sales[GM] | gross margin, gross profit, margin dollars, margin $ |
++| Sales[GM %] | gross margin %, margin %, margin rate, GM percent, profit margin |
++| Sales[Units] | units sold, items sold, quantity, qty, volume |
++| Tickets[Ticket Count] | tickets, transactions, receipts, orders, traffic, customer count |
++| Tickets[Avg Ticket] | average ticket, average transaction value, average order value, AOV, average spend |
++| Stores[Store Name] | store, location, cafe, café, shop, branch |
++| Stores[City] | city, market |
++| Stores[Province] | province, region |
++| Products[Product] | product, item, menu item, drink |
++| Products[Category] | category, product category, menu category, product line |
++| Products[List Price] | menu price, list price |
++| Channels[Channel] | channel, order channel, order type, sales channel |
++| Date[Month] | month, period |
++| Date[Weekday] | day of week, weekday |
++
++## 3. AI data schema
++
++No changes recommended. Every key, foreign-key and raw amount column is now
++hidden in the model, so the default schema already exposes only the 7 measures
++and 13 business-facing columns.
++
++## 4. Verified answers (top 5)
++
++Mark these report visuals as verified answers, each with 3 to 5 trigger phrasings:
++
++| Question | Visual (page) |
++|---|---|
++| What are total sales, tickets, average ticket and margin? | KPI cards (Sales Performance) |
++| How are sales trending month to month? | Monthly Sales Trend (Sales Performance) |
++| Which stores sell the most? | Sales by Store (Sales Performance) |
++| How do sales split across channels? | Channel Mix (Sales Performance) |
++| Which products sell best and at what margin? | Product Performance (Sales Performance) |
++
++## 5. Test prompts after publishing
++
++- "What was our gross margin % by category in 2025?"
++- "Which store had the highest average ticket last quarter?" (should not split by product)
++- "Compare Mobile Order and Delivery tickets for Jan–Oct 2026 vs 2025."
++- "What's the GM for Latte?" (should return gross margin, not a person)
++- "Show monthly sales for Toronto stores."

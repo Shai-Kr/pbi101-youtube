@@ -1,0 +1,49 @@
+table Tickets
+	lineageTag: c1104f99-a381-572a-9083-7ab2853e366d
+
+	measure 'Ticket Count' = SUM(Tickets[Tickets])
+		formatString: #,0
+		lineageTag: 18b901e4-7e77-5918-a8d0-e3118dc1e918
+
+	measure 'Avg Ticket' = DIVIDE([Total Sales], [Ticket Count])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 7c2c8c61-9742-5404-aa42-38b2cf5ef065
+
+	column Date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 66c39358-9397-5a91-bdac-8c8a89a8b84f
+		summarizeBy: none
+		sourceColumn: Date
+
+	column StoreID
+		dataType: int64
+		formatString: 0
+		lineageTag: 2bd198eb-07e5-5997-8cf1-85d8c6a2dfe1
+		summarizeBy: none
+		sourceColumn: StoreID
+
+	column ChannelID
+		dataType: int64
+		formatString: 0
+		lineageTag: 9c808fca-519a-5615-9590-db09803921d0
+		summarizeBy: none
+		sourceColumn: ChannelID
+
+	column Tickets
+		dataType: int64
+		formatString: #,0
+		lineageTag: a03ff8b9-09fa-5a58-8c76-609493809ccc
+		summarizeBy: sum
+		sourceColumn: Tickets
+
+	partition Tickets = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/tickets.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Date", type date}, {"StoreID", Int64.Type}, {"ChannelID", Int64.Type}, {"Tickets", Int64.Type}}, "en-US")
+				in
+					Typed
+

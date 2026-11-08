@@ -1,0 +1,109 @@
+/// Sales fact: one row per day, store, product and channel. Use its measures for revenue, cost, margin and units sold. Filter by Date, Stores, Products and Channels.
+table Sales
+	lineageTag: a408735e-de6a-5c62-83d6-8cbae1daccd4
+
+	/// Net sales revenue. Default measure for questions about sales or revenue. Works by date, store, product, category and channel. Sum of Sales[Net Sales].
+	measure 'Total Sales' = SUM(Sales[Net Sales])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Revenue
+		lineageTag: 3a7c6d77-2a7a-5b0e-82b4-0a788770643d
+
+	/// Total COGS (cost of goods sold) for the items sold, in currency. Use for questions about cost. Sum of Sales[COGS].
+	measure 'Total COGS' = SUM(Sales[COGS])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Margin
+		lineageTag: c116b7bd-6f0c-53a0-a19f-260d464c94b3
+
+	/// GM = gross margin (gross profit) in currency: Total Sales minus Total COGS. Use for 'gross margin', 'gross profit' or 'margin dollars'. Not General Manager. For the rate use GM %.
+	measure GM = [Total Sales] - [Total COGS]
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Margin
+		lineageTag: a8359706-5a7c-5d22-bb8d-47503025558c
+
+	/// GM % = gross margin percentage: GM divided by Total Sales. Use for 'margin %', 'margin rate' or 'profitability'. Higher is better. A ratio; never sum or average it across rows.
+	measure 'GM %' = DIVIDE([GM], [Total Sales])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Margin
+		lineageTag: 713ca74e-6d99-5af5-927d-c237e89b9102
+
+	/// Number of items sold. Use for 'units', 'quantity', 'items sold' or 'volume'. Counts items, not transactions; for transactions use Tickets[Ticket Count]. Sum of Sales[Qty].
+	measure Units = SUM(Sales[Qty])
+		formatString: #,0
+		displayFolder: Volume
+		lineageTag: 5ff8a3ed-e9b4-59f8-a36e-6dd60845b23e
+
+	/// Sales date (day grain). Relates to Date[Date]; use the Date table for time filtering and grouping.
+	column Date
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		lineageTag: aea6e6ff-35e3-578c-806e-ab1ee72a69b8
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Store key. Relates to Stores[StoreID]; use Stores columns to filter by store.
+	column StoreID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 80e51f5a-a7b3-56fe-9e5c-0a9697b892ca
+		summarizeBy: none
+		sourceColumn: StoreID
+
+	/// Product key. Relates to Products[ProductID]; use Products columns to filter by product.
+	column ProductID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9f738f66-4cb2-5ad5-b27d-5f7f0541cca8
+		summarizeBy: none
+		sourceColumn: ProductID
+
+	/// Channel key. Relates to Channels[ChannelID]; use Channels[Channel] to filter by channel.
+	column ChannelID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 319e65df-e1f3-54bd-a4a8-fa21b3cac9f5
+		summarizeBy: none
+		sourceColumn: ChannelID
+
+	/// Quantity of items sold on the row. Use the Units measure instead.
+	column Qty
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 77a3a757-d023-5716-9569-7f06d5b6279d
+		summarizeBy: sum
+		sourceColumn: Qty
+
+	/// Net sales amount for the row. Use the Total Sales measure instead.
+	column 'Net Sales'
+		dataType: double
+		isHidden
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 1b4787ad-8abd-5262-aa89-cd2cca8e9d02
+		summarizeBy: sum
+		sourceColumn: Net Sales
+
+	/// Cost of goods sold (COGS) amount for the row. Use the Total COGS measure instead.
+	column COGS
+		dataType: double
+		isHidden
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 59aaade2-f86d-5af4-99a4-f0cb3d5e5d56
+		summarizeBy: sum
+		sourceColumn: COGS
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/sales.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Date", type date}, {"StoreID", Int64.Type}, {"ProductID", Int64.Type}, {"ChannelID", Int64.Type}, {"Qty", Int64.Type}, {"Net Sales", type number}, {"COGS", type number}}, "en-US")
+				in
+					Typed
+

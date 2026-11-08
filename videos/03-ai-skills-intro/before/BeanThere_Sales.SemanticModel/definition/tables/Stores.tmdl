@@ -1,0 +1,46 @@
+table Stores
+	lineageTag: af72fecf-df7b-5472-93b9-b084d99cbedf
+
+	column StoreID
+		dataType: int64
+		isKey
+		formatString: 0
+		lineageTag: 31c29d7d-f428-5ff9-ba9a-8d7b56b1a611
+		summarizeBy: none
+		sourceColumn: StoreID
+
+	column 'Store Name'
+		dataType: string
+		lineageTag: 74bc14b1-ecc1-5f1c-8521-27f5bf5585c5
+		summarizeBy: none
+		sourceColumn: Store Name
+
+	column City
+		dataType: string
+		lineageTag: 799655d2-a355-52ba-a234-7e034a21213e
+		summarizeBy: none
+		sourceColumn: City
+
+	column Province
+		dataType: string
+		lineageTag: def3bad6-088d-5bc9-91f7-bbcb746aeee5
+		summarizeBy: none
+		sourceColumn: Province
+
+	column 'Open Date'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 8ec41041-0579-59eb-93a3-026be0d5de23
+		summarizeBy: none
+		sourceColumn: Open Date
+
+	partition Stores = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/03-ai-skills-intro/data/stores.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"StoreID", Int64.Type}, {"Store Name", type text}, {"City", type text}, {"Province", type text}, {"Open Date", type date}}, "en-US")
+				in
+					Typed
+
