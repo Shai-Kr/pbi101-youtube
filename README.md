@@ -16,7 +16,7 @@ SELECT magic FROM your_data;
 
 | # | Video | Topic | Materials |
 |---|---|---|---|
-| 02 | Object-Level Security in Power BI: Hide Columns, Zero Errors | OLS setup in TMDL view + 3 ways to fix the broken visuals (separate reports, field parameters + RLS, role detector) | [videos/02-ols-deep-dive](videos/02-ols-deep-dive) |
+| 02 | [Power BI Object-Level Security (OLS) in Under 8 Min: Zero Errors](https://youtu.be/6vz2SXUkJ68) | OLS setup in TMDL view + 3 ways to fix the broken visuals (separate reports, field parameters + RLS, role detector) | [videos/02-ols-deep-dive](videos/02-ols-deep-dive) |
 
 ## How to use the materials
 

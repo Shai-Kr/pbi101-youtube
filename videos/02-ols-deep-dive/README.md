@@ -5,7 +5,7 @@ Materials for the PBI101 video. Everything here is synthetic demo data (Aurora O
 ## What's inside
 | Folder | What |
 |---|---|
-| `pbip/` | The Power BI project (PBIP: PBIR report + TMDL model). Open `OLS_Deep_Dive.pbip` in Power BI Desktop, then **Refresh**. The tables read the CSVs from this repo on GitHub, so no local files are needed. |
+| `pbip/` | The Power BI project (PBIP: PBIR report + TMDL model). Open `OLS_Deep_Dive.pbip` in Power BI Desktop, then **Refresh**. The tables read the CSVs from this repo on GitHub, so no local files are needed (if Power BI asks how to connect to the web source, pick **Anonymous**). |
 | `scripts/` | The three TMDL scripts from the video. Paste them into **TMDL view** and click **Apply**, in order. |
 | `dax/` | The DAX behind fix 2 (field parameter) and fix 3 (role detector). |
 | `data/` | The CSVs (9,125 order lines, Jan 2025 - Oct 2026). |
@@ -27,4 +27,4 @@ Materials for the PBI101 video. Everything here is synthetic demo data (Aurora O
 - Any measure built on a secured column disappears with it.
 - Hide a whole table: `tablePermission <Table>` with `metadataPermission: none`.
 
-Video: (link added after upload)  |  Channel: https://www.youtube.com/@pbi101  |  https://pbi101.com
+🎬 **Watch the video: https://youtu.be/6vz2SXUkJ68**  |  Channel: https://www.youtube.com/@pbi101  |  https://pbi101.com
