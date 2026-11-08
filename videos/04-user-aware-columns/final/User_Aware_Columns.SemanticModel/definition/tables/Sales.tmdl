@@ -1,0 +1,122 @@
+table Sales
+	lineageTag: 4f6f0162-cb07-5668-a6ca-0d18884de599
+
+	measure Revenue = SUM ( Sales[Sales Amount] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: bda3694b-19da-5b7d-bf7b-2074ea741af3
+
+	measure Orders = DISTINCTCOUNT ( Sales[Order ID] )
+		formatString: #,0
+		lineageTag: 06067f7a-c742-53c3-861c-7045932dc539
+
+	measure Units = SUM ( Sales[Quantity] )
+		formatString: #,0
+		lineageTag: 802d53c7-c7a1-5bfd-84dc-e9197eb91fa0
+
+	/// Revenue of the viewer's own region (blank if the viewer manages no region). Filters Manager UPN: a measure filtering the user-context column failed in the preview
+	measure 'My Revenue' = CALCULATE ( [Revenue], KEEPFILTERS ( Regions[Manager UPN] = USERPRINCIPALNAME () ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 0fa8bbf8-9445-510e-b52e-c35c0d5e6a86
+
+	measure 'My Share' = DIVIDE ( [My Revenue], CALCULATE ( [Revenue], REMOVEFILTERS ( Regions ) ) )
+		formatString: 0%;-0%;0%
+		lineageTag: f19d4ec5-ffd5-5717-8f7e-83fbb82ea998
+
+	measure 'Avg Monthly Revenue' = DIVIDE ( [Revenue], DISTINCTCOUNT ( 'Date'[Year Month] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 5d30ace6-63f5-5968-9b94-430d51abf350
+
+	measure 'Monthly Target' = SUM ( Regions[Monthly Target] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 4a36c1ad-7879-5600-9c90-13f43674435f
+
+	measure 'vs Target' = DIVIDE ( [Avg Monthly Revenue], [Monthly Target] )
+		formatString: 0%;-0%;0%
+		lineageTag: 721998d9-7ed2-5501-b9be-2068f4e4043b
+
+	measure Greeting = ```
+			VAR Who = LOOKUPVALUE ( Regions[Manager], Regions[Manager UPN], USERPRINCIPALNAME () )
+			RETURN
+			    IF ( ISBLANK ( Who ), "Hi there 👋", "Hi " & Who & " 👋" )
+			```
+		lineageTag: b296ef3d-615b-59fe-9e31-5a41f32a2de8
+
+	measure 'Cost Access' = ```
+			IF (
+			    ISEMPTY ( 'Product Cost' ),
+			    "🔒  Cost table blocked for your role",
+			    "✅  Cost table visible"
+			)
+			```
+		lineageTag: 69d2b85d-b456-53f9-993b-74f17f01fabf
+
+	column 'Order ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 33d611e7-2c9e-5076-83cb-1bb3754297cb
+		summarizeBy: none
+		sourceColumn: Order ID
+
+	column 'Order Date'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 49d66601-41ab-5761-ae86-e19101da24f3
+		summarizeBy: none
+		sourceColumn: Order Date
+
+	column 'Product ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: cb34ec85-d931-50f5-89c8-644447ac8a09
+		summarizeBy: none
+		sourceColumn: Product ID
+
+	column 'Region ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 69cc80ea-b237-5890-a729-091817bac4ac
+		summarizeBy: none
+		sourceColumn: Region ID
+
+	column Quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: f8dae899-3bf2-5169-82b6-1dc2ab80f137
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+	column 'Unit Price'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: d6db5c41-91fc-594a-862b-070eb6159863
+		summarizeBy: sum
+		sourceColumn: Unit Price
+
+	column 'Sales Amount'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: f19f853a-9a1b-533e-8f47-e2e20136baea
+		summarizeBy: sum
+		sourceColumn: Sales Amount
+
+	/// Same numbers as Sales Amount, but computed at query time: not stored
+	column 'Line Amount' = Sales[Quantity] * Sales[Unit Price]
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 67a246a5-eacc-5ac7-821d-1d6f4a300cc9
+		summarizeBy: sum
+		expressionContext: userContext
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/04-user-aware-columns/data/sales.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Kept = Table.SelectColumns(Headers, {"Order ID", "Order Date", "Product ID", "Region ID", "Quantity", "Unit Price", "Sales Amount"}),
+					Typed = Table.TransformColumnTypes(Kept, {{"Order ID", Int64.Type}, {"Order Date", type date}, {"Product ID", Int64.Type}, {"Region ID", Int64.Type}, {"Quantity", Int64.Type}, {"Unit Price", type number}, {"Sales Amount", type number}}, "en-US")
+				in
+					Typed
+

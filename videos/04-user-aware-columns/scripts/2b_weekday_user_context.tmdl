@@ -1,0 +1,17 @@
+createOrReplace
+
+	ref table Date
+
+		column Weekday = ```
+				VAR Lang =
+				    COALESCE (
+				        LOOKUPVALUE ( Regions[Culture], Regions[Manager UPN], USERPRINCIPALNAME () ),
+				        USERCULTURE ()
+				    )
+				RETURN
+				    FORMAT ( DATE ( 2020, 1, 5 + 'Date'[Day of Week Number] ), "dddd", Lang )
+				```
+			dataType: string
+			summarizeBy: none
+			expressionContext: userContext
+			sortByColumn: 'Day of Week Number'

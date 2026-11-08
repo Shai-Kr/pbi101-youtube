@@ -1,0 +1,9 @@
+// Date table: set Expression Context = User Context first, then replace the formula
+Month =
+VAR Lang =
+    COALESCE (
+        LOOKUPVALUE ( Regions[Culture], Regions[Manager UPN], USERPRINCIPALNAME () ),
+        USERCULTURE ()
+    )
+RETURN
+    FORMAT ( DATE ( 2020, 'Date'[Month Number], 1 ), "mmm", Lang )

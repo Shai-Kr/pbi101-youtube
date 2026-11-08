@@ -1,0 +1,61 @@
+table Regions
+	lineageTag: 8a7c654a-2b6e-59da-8c12-76983973920b
+
+	column 'Region ID'
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		lineageTag: ee9f320c-ca6d-5c4f-91f8-066feb5f54a7
+		summarizeBy: none
+		sourceColumn: Region ID
+
+	column Region
+		dataType: string
+		lineageTag: 30529eb4-64ce-5e86-a3b8-10462a14ce47
+		summarizeBy: none
+		sourceColumn: Region
+
+	column Manager
+		dataType: string
+		lineageTag: be6d7342-af74-5939-9a23-6b4cd3f2c929
+		summarizeBy: none
+		sourceColumn: Manager
+
+	column 'Manager UPN'
+		dataType: string
+		lineageTag: 9560164e-4121-5d22-97f3-230add59fda6
+		summarizeBy: none
+		sourceColumn: Manager UPN
+
+	column Culture
+		dataType: string
+		lineageTag: 64859666-4cb4-5716-b27d-48534d86c808
+		summarizeBy: none
+		sourceColumn: Culture
+
+	column 'Monthly Target'
+		dataType: int64
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 675b2191-e1ec-5080-9651-08dc6671da4c
+		summarizeBy: sum
+		sourceColumn: Monthly Target
+
+	/// Evaluated per viewer: the region this viewer manages, versus all the others
+	column 'My Region' = IF ( Regions[Manager UPN] = USERPRINCIPALNAME (), "★ My region", "Other regions" )
+		dataType: string
+		lineageTag: 800ef798-f78d-5e83-ad73-84d5ebb5b21b
+		summarizeBy: none
+		expressionContext: userContext
+
+	partition Regions = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/04-user-aware-columns/data/regions.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Region ID", Int64.Type}, {"Region", type text}, {"Manager", type text}, {"Manager UPN", type text}, {"Culture", type text}, {"Monthly Target", Int64.Type}}, "en-US")
+				in
+					Typed
+

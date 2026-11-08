@@ -1,0 +1,10 @@
+// How much data does each column store? (DAX query view)
+DEFINE
+    VAR Seg = SELECTCOLUMNS ( INFO.STORAGETABLECOLUMNSEGMENTS (), "Id", [TABLE_ID] & [COLUMN_ID], "Bytes", [USED_SIZE] )
+EVALUATE
+ADDCOLUMNS (
+    DATATABLE ( "Column", STRING, { { "Sales Amount" }, { "Line Amount" } } ),
+    "Data KB",
+        VAR c = [Column]
+        RETURN ROUND ( SUMX ( FILTER ( Seg, CONTAINSSTRING ( [Id], c ) ), [Bytes] ) / 1024, 1 )
+)

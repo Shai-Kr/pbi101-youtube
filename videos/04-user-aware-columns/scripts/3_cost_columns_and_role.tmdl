@@ -1,0 +1,18 @@
+createOrReplace
+
+	ref table Products
+
+		column Supplier = LOOKUPVALUE ( 'Product Cost'[Supplier], 'Product Cost'[Product ID], Products[Product ID] )
+			dataType: string
+			summarizeBy: none
+			expressionContext: userContext
+
+		column 'Margin Band' = LOOKUPVALUE ( 'Product Cost'[Margin Band], 'Product Cost'[Product ID], Products[Product ID] )
+			dataType: string
+			summarizeBy: none
+			expressionContext: userContext
+
+	role 'Sales Rep'
+		modelPermission: read
+
+		tablePermission 'Product Cost' = FALSE()

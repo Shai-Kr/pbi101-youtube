@@ -1,0 +1,40 @@
+table 'Product Cost'
+	isHidden
+	lineageTag: 662dc44e-64e2-5eaa-ada1-4c64faf12dfb
+
+	column 'Product ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 68fbacbc-c119-5482-9f41-f3948f4d3833
+		summarizeBy: none
+		sourceColumn: Product ID
+
+	column Supplier
+		dataType: string
+		lineageTag: 782391a0-9e8c-5603-a6cf-3d35150986b2
+		summarizeBy: none
+		sourceColumn: Supplier
+
+	column 'Unit Cost'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 111d3612-9986-56da-afd3-cde0b19e8410
+		summarizeBy: none
+		sourceColumn: Unit Cost
+
+	column 'Margin Band'
+		dataType: string
+		lineageTag: 54da4a5a-74eb-5e10-adc3-bddcc418a9ae
+		summarizeBy: none
+		sourceColumn: Margin Band
+
+	partition 'Product Cost' = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/04-user-aware-columns/data/product_cost.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Product ID", Int64.Type}, {"Supplier", type text}, {"Unit Cost", type number}, {"Margin Band", type text}}, "en-US")
+				in
+					Typed
+

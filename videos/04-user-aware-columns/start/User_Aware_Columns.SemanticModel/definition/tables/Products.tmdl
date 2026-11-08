@@ -1,0 +1,44 @@
+table Products
+	lineageTag: ac1eb9ef-4ed4-55dc-b8fc-ebe00444973f
+
+	column 'Product ID'
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		lineageTag: e00fe444-1dbc-50f7-9133-9940e6d35ebb
+		summarizeBy: none
+		sourceColumn: Product ID
+
+	column Product
+		dataType: string
+		lineageTag: 8e617225-ffbc-5ea2-a1f5-fda166e5d47d
+		summarizeBy: none
+		sourceColumn: Product
+
+	column Category
+		dataType: string
+		lineageTag: d8a5249e-4d27-5df4-8da0-bd26dead6b75
+		summarizeBy: none
+		sourceColumn: Category
+
+	column Supplier = LOOKUPVALUE ( 'Product Cost'[Supplier], 'Product Cost'[Product ID], Products[Product ID] )
+		dataType: string
+		lineageTag: 43f534cf-3652-571c-b5fc-7ec71c37057d
+		summarizeBy: none
+
+	column 'Margin Band' = LOOKUPVALUE ( 'Product Cost'[Margin Band], 'Product Cost'[Product ID], Products[Product ID] )
+		dataType: string
+		lineageTag: 61d31354-de39-5788-8a49-5956b2720209
+		summarizeBy: none
+
+	partition Products = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/04-user-aware-columns/data/products.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Product ID", Int64.Type}, {"Product", type text}, {"Category", type text}}, "en-US")
+				in
+					Typed
+

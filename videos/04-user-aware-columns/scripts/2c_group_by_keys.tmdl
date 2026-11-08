@@ -1,0 +1,82 @@
+createOrReplace
+
+	table Date
+
+		column Date
+			dataType: dateTime
+			isKey
+			formatString: Short Date
+			summarizeBy: none
+			sourceColumn: [Date]
+
+		column 'Year Month'
+			dataType: dateTime
+			formatString: mmm yy
+			summarizeBy: none
+			sourceColumn: [Year Month]
+
+		column Year
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: [Year]
+
+		column 'Month Number'
+			dataType: int64
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: [Month Number]
+
+		column 'Day of Week Number'
+			dataType: int64
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: [Day of Week Number]
+
+		column Month = ```
+				VAR Lang =
+				    COALESCE (
+				        LOOKUPVALUE ( Regions[Culture], Regions[Manager UPN], USERPRINCIPALNAME () ),
+				        USERCULTURE ()
+				    )
+				RETURN
+				    FORMAT ( DATE ( 2020, 'Date'[Month Number], 1 ), "mmm", Lang )
+				```
+			dataType: string
+			summarizeBy: none
+			expressionContext: userContext
+			sortByColumn: 'Month Number'
+
+			relatedColumnDetails
+				groupByColumn: 'Month Number'
+
+		column Weekday = ```
+				VAR Lang =
+				    COALESCE (
+				        LOOKUPVALUE ( Regions[Culture], Regions[Manager UPN], USERPRINCIPALNAME () ),
+				        USERCULTURE ()
+				    )
+				RETURN
+				    FORMAT ( DATE ( 2020, 1, 5 + 'Date'[Day of Week Number] ), "dddd", Lang )
+				```
+			dataType: string
+			summarizeBy: none
+			expressionContext: userContext
+			sortByColumn: 'Day of Week Number'
+
+			relatedColumnDetails
+				groupByColumn: 'Day of Week Number'
+
+		partition Date = calculated
+			mode: import
+			source = ```
+					ADDCOLUMNS (
+					    CALENDAR ( DATE ( 2025, 1, 1 ), DATE ( 2026, 10, 31 ) ),
+					    "Year Month", DATE ( YEAR ( [Date] ), MONTH ( [Date] ), 1 ),
+					    "Year", YEAR ( [Date] ),
+					    "Month Number", MONTH ( [Date] ),
+					    "Day of Week Number", WEEKDAY ( [Date], 2 )
+					)
+					```

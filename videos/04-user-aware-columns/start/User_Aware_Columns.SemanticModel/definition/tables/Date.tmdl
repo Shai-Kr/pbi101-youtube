@@ -1,0 +1,65 @@
+table Date
+	lineageTag: 501c31a8-2d20-502d-8f64-1ee62cfb4ef0
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: a1c783e2-150d-576e-9814-88b4d81c96a3
+		summarizeBy: none
+		sourceColumn: [Date]
+
+	column 'Year Month'
+		dataType: dateTime
+		formatString: mmm yy
+		lineageTag: 0c860ac0-04e1-5aec-8616-e5fc7155b1da
+		summarizeBy: none
+		sourceColumn: [Year Month]
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: d2222676-2a89-54a2-87cd-916b1548971f
+		summarizeBy: none
+		sourceColumn: [Year]
+
+	column 'Month Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 97fa80a0-9ecd-568d-bc2d-2dafe8846758
+		summarizeBy: none
+		sourceColumn: [Month Number]
+
+	column 'Day of Week Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 118201b1-38d8-5044-998a-c62b2065de6d
+		summarizeBy: none
+		sourceColumn: [Day of Week Number]
+
+	column Month = FORMAT ( DATE ( 2020, 'Date'[Month Number], 1 ), "mmm" )
+		dataType: string
+		lineageTag: 5e44a8ea-2181-5154-bb4d-56680f7e2305
+		summarizeBy: none
+		sortByColumn: 'Month Number'
+
+	column Weekday = FORMAT ( DATE ( 2020, 1, 5 + 'Date'[Day of Week Number] ), "dddd" )
+		dataType: string
+		lineageTag: d8f95c30-317a-53fb-bb9e-66dfbc2b281c
+		summarizeBy: none
+		sortByColumn: 'Day of Week Number'
+
+	partition Date = calculated
+		mode: import
+		source = ```
+				ADDCOLUMNS (
+				    CALENDAR ( DATE ( 2025, 1, 1 ), DATE ( 2026, 10, 31 ) ),
+				    "Year Month", DATE ( YEAR ( [Date] ), MONTH ( [Date] ), 1 ),
+				    "Year", YEAR ( [Date] ),
+				    "Month Number", MONTH ( [Date] ),
+				    "Day of Week Number", WEEKDAY ( [Date], 2 )
+				)
+				```
+

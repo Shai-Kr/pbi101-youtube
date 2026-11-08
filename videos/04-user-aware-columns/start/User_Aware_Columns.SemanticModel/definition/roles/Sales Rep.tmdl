@@ -1,0 +1,6 @@
+role 'Sales Rep'
+	modelPermission: read
+
+	tablePermission 'Product Cost' = FALSE()
+
+	annotation PBI_Id = 36b946a99cca52ecbe53f3439f7f744e

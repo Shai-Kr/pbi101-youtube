@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "User_Aware_Columns"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9b22fbd2-0c9a-58a2-a084-dbb33df713cd"
+  }
+}
