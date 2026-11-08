@@ -1,0 +1,34 @@
+table Products
+	lineageTag: b8f523b5-88fc-558d-87a3-76518136af25
+
+	column 'Product ID'
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		lineageTag: c786b1a1-cfac-5d73-833b-30c5a606af1b
+		summarizeBy: none
+		sourceColumn: Product ID
+
+	column Product
+		dataType: string
+		lineageTag: 9501dd33-1177-5681-93cd-41de41376b13
+		summarizeBy: none
+		sourceColumn: Product
+
+	column Category
+		dataType: string
+		lineageTag: 76bdd40c-0438-554c-8264-13ed6146bb8c
+		summarizeBy: none
+		sourceColumn: Category
+
+	partition Products = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/02-ols-deep-dive/data/products.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Product ID", Int64.Type}, {"Product", type text}, {"Category", type text}}, "en-US")
+				in
+					Typed
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "OLS_Deep_Dive"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "db14319e-e5bd-5505-8210-3cdea797ba6d"
+  }
+}

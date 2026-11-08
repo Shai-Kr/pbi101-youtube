@@ -1,0 +1,14 @@
+createOrReplace
+
+	role 'Sales Team'
+		modelPermission: read
+
+		tablePermission Sales
+
+			columnPermission 'Unit Cost' = none
+
+			columnPermission 'Cost Amount' = none
+
+		tablePermission 'Metric Picker' = 'Metric Picker'[Is Sensitive] = FALSE()
+
+		tablePermission 'Security Marker' = FALSE()

@@ -1,0 +1,49 @@
+table 'Metric Picker'
+	lineageTag: 91021a4c-76dc-55fb-abb4-24b4988b3e34
+
+	column Metric
+		dataType: string
+		lineageTag: 669d65ad-f3e9-5816-9e03-b1df98538fa5
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Metric Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Metric Fields'
+
+	column 'Metric Fields'
+		dataType: string
+		isHidden
+		lineageTag: 8a65b06e-dd80-5f63-bdbd-8c9dfd1f9a74
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Metric Order'
+
+		extendedProperty ParameterMetadata = {"version":3,"kind":2}
+
+	column 'Metric Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: dbcec755-5e3b-5cb7-9b93-4a2391a9f495
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+	column 'Is Sensitive'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 9d1f6042-d2a3-5c19-bce2-9b309721aa63
+		summarizeBy: none
+		sourceColumn: [Value4]
+
+	partition 'Metric Picker' = calculated
+		mode: import
+		source =
+				{
+				    ("Revenue", NAMEOF('Sales'[Revenue]), 0, FALSE()),
+				    ("Orders", NAMEOF('Sales'[Orders]), 1, FALSE()),
+				    ("Avg Order Value", NAMEOF('Sales'[Avg Order Value]), 2, FALSE()),
+				    ("Gross Margin", NAMEOF('Sales'[Gross Margin]), 3, TRUE()),
+				    ("Margin %", NAMEOF('Sales'[Margin %]), 4, TRUE())
+				}
+

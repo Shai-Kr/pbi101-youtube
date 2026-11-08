@@ -1,0 +1,26 @@
+// ---------- Fix 2: field parameter with a sensitivity flag (calculated table)
+Metric Picker =
+{
+    ("Revenue",         NAMEOF('Sales'[Revenue]),         0, FALSE()),
+    ("Orders",          NAMEOF('Sales'[Orders]),          1, FALSE()),
+    ("Avg Order Value", NAMEOF('Sales'[Avg Order Value]), 2, FALSE()),
+    ("Gross Margin",    NAMEOF('Sales'[Gross Margin]),    3, TRUE()),
+    ("Margin %",        NAMEOF('Sales'[Margin %]),        4, TRUE())
+}
+// RLS filter on the role:  'Metric Picker'[Is Sensitive] = FALSE()
+
+// ---------- Fix 3: role detector
+Security Marker = { 1 }          // one row; the restricted role filters it with FALSE()
+
+Full Access = NOT ISEMPTY('Security Marker')
+Access Label = IF([Full Access], "Full access: cost and margin included", "Sales view: cost and margin are protected")
+Margin Button Text = IF([Full Access], "Open margin details", "Margin details: finance only")
+Margin Button Target = IF([Full Access], "Margin Details", "")     // page display name; "" = goes nowhere
+Margin Button Color = IF([Full Access], "#F59E0B", "#CBD5E1")
+
+// ---------- base measures (Sales)
+Revenue = SUM(Sales[Sales Amount])
+Orders = DISTINCTCOUNT(Sales[Order ID])
+Avg Order Value = DIVIDE([Revenue], [Orders])
+Gross Margin = [Revenue] - SUM(Sales[Cost Amount])
+Margin % = DIVIDE([Gross Margin], [Revenue])

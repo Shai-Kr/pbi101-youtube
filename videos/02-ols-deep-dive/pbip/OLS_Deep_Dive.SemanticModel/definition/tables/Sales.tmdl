@@ -1,0 +1,98 @@
+table Sales
+	lineageTag: feb1556f-914a-5e12-8c2d-0767c0dcc08f
+
+	measure Revenue = SUM(Sales[Sales Amount])
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: a4db8f21-7da3-505a-9b00-4ba3deda2a19
+
+	measure Orders = DISTINCTCOUNT(Sales[Order ID])
+		formatString: #,0
+		lineageTag: daa4b3ac-2880-5816-b25b-661f007ea3ed
+
+	measure 'Avg Order Value' = DIVIDE([Revenue], [Orders])
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 1e542532-209a-529c-a9be-4f947104fa3e
+
+	measure 'Gross Margin' = [Revenue] - SUM(Sales[Cost Amount])
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: ee531a3f-c57e-5b0d-9a95-8b5fbd102964
+
+	measure 'Margin %' = DIVIDE([Gross Margin], [Revenue])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 94460a17-a6d4-5a56-b66f-4e0718703eb9
+
+	column 'Order ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: a83ba0d5-e71d-5084-aab6-2954f2e8c6eb
+		summarizeBy: none
+		sourceColumn: Order ID
+
+	column 'Order Date'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 7578ba0d-705d-5604-9f56-cadf2485350c
+		summarizeBy: none
+		sourceColumn: Order Date
+
+	column 'Product ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a63e97d0-26c6-5269-b29b-2579890de7bb
+		summarizeBy: none
+		sourceColumn: Product ID
+
+	column 'Region ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f41951e9-9805-5d9a-b636-d9cd4acd16a0
+		summarizeBy: none
+		sourceColumn: Region ID
+
+	column Quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: 97dcb0ac-e242-5c48-9744-89db25bb9318
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+	column 'Unit Price'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: a0bfc81b-5037-5ba1-b4dd-63e7f95cc5ca
+		summarizeBy: sum
+		sourceColumn: Unit Price
+
+	column 'Unit Cost'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 27b01c5c-67ce-59ba-9fc1-e2faf7c76647
+		summarizeBy: sum
+		sourceColumn: Unit Cost
+
+	column 'Sales Amount'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 07323a3b-a486-545e-938b-bbeaf2aa6a8b
+		summarizeBy: sum
+		sourceColumn: Sales Amount
+
+	column 'Cost Amount'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: d0099bd7-136c-5ee7-95a3-08f1d78c777b
+		summarizeBy: sum
+		sourceColumn: Cost Amount
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/02-ols-deep-dive/data/sales.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Order ID", Int64.Type}, {"Order Date", type date}, {"Product ID", Int64.Type}, {"Region ID", Int64.Type}, {"Quantity", Int64.Type}, {"Unit Price", type number}, {"Unit Cost", type number}, {"Sales Amount", type number}, {"Cost Amount", type number}}, "en-US")
+				in
+					Typed
+

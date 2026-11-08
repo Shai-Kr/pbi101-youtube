@@ -1,0 +1,224 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "f0000000000000000040",
+  "position": {
+    "x": 24,
+    "y": 506,
+    "z": 4000,
+    "height": 198,
+    "width": 1232,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "How it works",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "fontWeight": "bold",
+                      "color": "#0F172A"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "1.  ",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#0F172A"
+                    }
+                  },
+                  {
+                    "value": "'Security Marker'",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#7C3AED",
+                      "fontFamily": "Consolas"
+                    }
+                  },
+                  {
+                    "value": " has one row. The Sales Team role filters it with  ",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#0F172A"
+                    }
+                  },
+                  {
+                    "value": "FALSE()",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#7C3AED",
+                      "fontFamily": "Consolas"
+                    }
+                  },
+                  {
+                    "value": "  so it's empty for them.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#0F172A"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "2.  ",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#0F172A"
+                    }
+                  },
+                  {
+                    "value": "[Full Access] = NOT ISEMPTY('Security Marker')",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#7C3AED",
+                      "fontFamily": "Consolas"
+                    }
+                  },
+                  {
+                    "value": "  never touches a secured column, so it never breaks.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#0F172A"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "3.  It drives the banner, the button text, its color and where it navigates.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#0F172A"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "4.  Secured visuals live on a hidden finance page that only full-access users reach.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#0F172A"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E3E8F0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "12L"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "12L"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "18L"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "18L"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

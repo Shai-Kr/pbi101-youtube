@@ -16,12 +16,12 @@ SELECT magic FROM your_data;
 
 | # | Video | Topic | Materials |
 |---|---|---|---|
-| | Coming soon | | |
+| 02 | Object-Level Security in Power BI: Hide Columns, Zero Errors | OLS setup in TMDL view + 3 ways to fix the broken visuals (separate reports, field parameters + RLS, role detector) | [videos/02-ols-deep-dive](videos/02-ols-deep-dive) |
 
 ## How to use the materials
 
 1. Download or clone this repo, then open the video's folder.
-2. Power BI projects are in **PBIP** format (plain-text files). Open the `.pbip` file in Power BI Desktop, then **Refresh** to load the sample data. The data path is a parameter you can point at the `data/` folder.
+2. Power BI projects are in **PBIP** format (plain-text files). Open the `.pbip` file in Power BI Desktop, then **Refresh**: the sample data loads straight from this repo on GitHub, so there's nothing to point at.
 3. Scripts can be copied as-is: TMDL goes into TMDL view, DAX into a measure or DAX query view, notebooks into a Fabric workspace.
 
 ## Folder layout
@@ -29,11 +29,13 @@ SELECT magic FROM your_data;
 ```
 videos/
   NN-short-topic/
-    README.md     what the video shows, the steps, links
-    report/       Power BI project (PBIP)
-    data/         synthetic sample data + generator
-    scripts/      TMDL / DAX / SQL / Python from the video
-    notebooks/    Fabric notebooks (when relevant)
+    README.md        what the video shows, the steps, links
+    pbip/            Power BI project (PBIP)
+    data/            synthetic sample data
+    build_report.py  regenerates the data and the whole PBIP
+    scripts/         TMDL / SQL / Python from the video
+    dax/             the DAX from the video
+    notebooks/       Fabric notebooks (when relevant)
 ```
 
 ## Safe to share

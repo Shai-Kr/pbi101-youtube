@@ -1,0 +1,31 @@
+table 'Security Marker'
+	lineageTag: 5f183d09-b315-578a-a998-b65eb50a5073
+
+	/// TRUE when this viewer is not in a restricted role (the role empties this table)
+	measure 'Full Access' = NOT ISEMPTY('Security Marker')
+		lineageTag: 2baeef34-e9e4-5e5b-8252-20cdb4657c16
+
+	measure 'Access Label' = IF([Full Access], "✅  Full access: cost and margin included", "🔒  Sales view: cost and margin are protected")
+		lineageTag: 004b48d0-cd77-5665-b539-6894964440f3
+
+	measure 'Margin Button Text' = IF([Full Access], "Open margin details  →", "🔒  Margin details: finance only")
+		lineageTag: 1cb11715-5359-54c1-b460-ca9cf5f4b812
+
+	measure 'Margin Button Target' = IF([Full Access], "Margin Details", "")
+		lineageTag: 0e362a76-e53d-5d65-bd54-aabb578c032a
+
+	measure 'Margin Button Color' = IF([Full Access], "#F59E0B", "#CBD5E1")
+		lineageTag: 33b30fbd-517b-507b-9b8e-43c58486c0be
+
+	column Marker
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 62968369-467d-5fba-ac10-219d12dbb96b
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Security Marker' = calculated
+		mode: import
+		source = { 1 }
+

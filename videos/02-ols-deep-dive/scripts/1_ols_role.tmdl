@@ -1,0 +1,10 @@
+createOrReplace
+
+	role 'Sales Team'
+		modelPermission: read
+
+		tablePermission Sales
+
+			columnPermission 'Unit Cost' = none
+
+			columnPermission 'Cost Amount' = none

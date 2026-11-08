@@ -1,0 +1,28 @@
+table Regions
+	lineageTag: deca73d9-d53f-54b4-8bca-f8767938f813
+
+	column 'Region ID'
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		lineageTag: 177b3cee-3b2a-56e6-a0a6-f8f412fec75c
+		summarizeBy: none
+		sourceColumn: Region ID
+
+	column Region
+		dataType: string
+		lineageTag: d14121a4-684e-5512-a73e-8c4bcaa16672
+		summarizeBy: none
+		sourceColumn: Region
+
+	partition Regions = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/02-ols-deep-dive/data/regions.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Region ID", Int64.Type}, {"Region", type text}}, "en-US")
+				in
+					Typed
+

@@ -1,0 +1,35 @@
+table Date
+	lineageTag: 66243c89-bc80-5192-ac75-161f437e30cc
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: 88458c18-2f3b-561f-9aa6-41424f0b07e0
+		summarizeBy: none
+		sourceColumn: Date
+
+	column Month
+		dataType: dateTime
+		formatString: mmm yy
+		lineageTag: aaceafb7-d813-5d9a-a095-cd70210e458c
+		summarizeBy: none
+		sourceColumn: Month
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: abaa46d4-48bb-506a-b0e6-0486fb402c00
+		summarizeBy: none
+		sourceColumn: Year
+
+	partition Date = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com/Shai-Kr/pbi101-youtube/main/videos/02-ols-deep-dive/data/date.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Date", type date}, {"Month", type date}, {"Year", Int64.Type}}, "en-US")
+				in
+					Typed
+
