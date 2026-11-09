@@ -1,0 +1,11 @@
+relationship Sales_Products
+	fromColumn: Sales.'Product ID'
+	toColumn: Products.'Product ID'
+
+relationship Sales_Regions
+	fromColumn: Sales.'Region ID'
+	toColumn: Regions.'Region ID'
+
+relationship Sales_Date
+	fromColumn: Sales.'Order Date'
+	toColumn: Date.Date

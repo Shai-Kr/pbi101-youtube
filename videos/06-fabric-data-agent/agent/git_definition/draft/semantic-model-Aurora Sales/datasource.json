@@ -1,0 +1,219 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/dataSource/1.0.0/schema.json",
+  "artifactId": "<aurora-sales-logical-id>",
+  "workspaceId": "<same-workspace>",
+  "dataSourceInstructions": null,
+  "displayName": "Aurora Sales",
+  "type": "semantic_model",
+  "userDescription": "Aurora Outdoor sales: orders, products, regions and dates (demo data).",
+  "metadata": null,
+  "elements": [
+    {
+      "id": "Sales",
+      "is_selected": true,
+      "display_name": "Sales",
+      "type": "semantic_model.table",
+      "description": "Sales facts: one row per order line from Aurora Outdoor, a made-up outdoor gear company. January 1, 2025 to October 31, 2026. All amounts are in US dollars.",
+      "children": [
+        {
+          "id": "Order_Date",
+          "is_selected": true,
+          "display_name": "Order Date",
+          "type": "semantic_model.column",
+          "data_type": "DateTime",
+          "description": "Date the order was placed. Related to the Date table.",
+          "children": []
+        },
+        {
+          "id": "Unit_Price",
+          "is_selected": true,
+          "display_name": "Unit Price",
+          "type": "semantic_model.column",
+          "data_type": "Double",
+          "description": "Selling price per unit after discount, in US dollars.",
+          "children": []
+        },
+        {
+          "id": "Revenue",
+          "is_selected": true,
+          "display_name": "Revenue",
+          "type": "semantic_model.measure",
+          "data_type": "Double",
+          "description": "Total sales in US dollars: units times the selling price after discount. Use this for sales, revenue or turnover.",
+          "children": []
+        },
+        {
+          "id": "Cost",
+          "is_selected": true,
+          "display_name": "Cost",
+          "type": "semantic_model.measure",
+          "data_type": "Double",
+          "description": "Total cost of the goods sold, in US dollars.",
+          "children": []
+        },
+        {
+          "id": "Gross_Margin",
+          "is_selected": true,
+          "display_name": "Gross Margin",
+          "type": "semantic_model.measure",
+          "data_type": "Double",
+          "description": "Revenue minus cost, in US dollars (gross profit).",
+          "children": []
+        },
+        {
+          "id": "Margin__",
+          "is_selected": true,
+          "display_name": "Margin %",
+          "type": "semantic_model.measure",
+          "data_type": "Double",
+          "description": "Gross margin as a percentage of revenue (Gross Margin divided by Revenue).",
+          "children": []
+        },
+        {
+          "id": "Orders",
+          "is_selected": true,
+          "display_name": "Orders",
+          "type": "semantic_model.measure",
+          "data_type": "Int64",
+          "description": "Number of orders.",
+          "children": []
+        },
+        {
+          "id": "Units",
+          "is_selected": true,
+          "display_name": "Units",
+          "type": "semantic_model.measure",
+          "data_type": "Int64",
+          "description": "Number of units sold.",
+          "children": []
+        },
+        {
+          "id": "Avg_Order_Value",
+          "is_selected": true,
+          "display_name": "Avg Order Value",
+          "type": "semantic_model.measure",
+          "data_type": "Double",
+          "description": "Average revenue per order, in US dollars.",
+          "children": []
+        },
+        {
+          "id": "Revenue_PY",
+          "is_selected": true,
+          "display_name": "Revenue PY",
+          "type": "semantic_model.measure",
+          "data_type": "Double",
+          "description": "Revenue for the same dates one year earlier.",
+          "children": []
+        },
+        {
+          "id": "Revenue_YoY__",
+          "is_selected": true,
+          "display_name": "Revenue YoY %",
+          "type": "semantic_model.measure",
+          "data_type": "Double",
+          "description": "Revenue growth versus the same dates one year earlier, as a percentage.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "Products",
+      "is_selected": true,
+      "display_name": "Products",
+      "type": "semantic_model.table",
+      "description": "The 12 products Aurora Outdoor sells, in 4 categories: Camping, Hiking, Apparel and Accessories.",
+      "children": [
+        {
+          "id": "Product",
+          "is_selected": true,
+          "display_name": "Product",
+          "type": "semantic_model.column",
+          "data_type": "String",
+          "description": "Product name, for example Summit 2P Tent or Headlamp Pro.",
+          "children": []
+        },
+        {
+          "id": "Category",
+          "is_selected": true,
+          "display_name": "Category",
+          "type": "semantic_model.column",
+          "data_type": "String",
+          "description": "Product category: Camping, Hiking, Apparel or Accessories.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "Regions",
+      "is_selected": true,
+      "display_name": "Regions",
+      "type": "semantic_model.table",
+      "description": "The 4 sales regions: North America, Europe, Asia Pacific and Latin America.",
+      "children": [
+        {
+          "id": "Region",
+          "is_selected": true,
+          "display_name": "Region",
+          "type": "semantic_model.column",
+          "data_type": "String",
+          "description": "Sales region: North America, Europe, Asia Pacific or Latin America.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "Date",
+      "is_selected": true,
+      "display_name": "Date",
+      "type": "semantic_model.table",
+      "description": "Calendar dates, one row per day from January 1, 2025 to October 31, 2026 (the last day with sales).",
+      "children": [
+        {
+          "id": "Date2",
+          "is_selected": true,
+          "display_name": "Date",
+          "type": "semantic_model.column",
+          "data_type": "DateTime",
+          "description": "Calendar date.",
+          "children": []
+        },
+        {
+          "id": "Year",
+          "is_selected": true,
+          "display_name": "Year",
+          "type": "semantic_model.column",
+          "data_type": "Int64",
+          "description": "Calendar year, for example 2026.",
+          "children": []
+        },
+        {
+          "id": "Quarter",
+          "is_selected": true,
+          "display_name": "Quarter",
+          "type": "semantic_model.column",
+          "data_type": "String",
+          "description": "Calendar quarter: Q1, Q2, Q3 or Q4.",
+          "children": []
+        },
+        {
+          "id": "Month",
+          "is_selected": true,
+          "display_name": "Month",
+          "type": "semantic_model.column",
+          "data_type": "DateTime",
+          "description": "First day of the month, for monthly trends.",
+          "children": []
+        },
+        {
+          "id": "Month_Name",
+          "is_selected": true,
+          "display_name": "Month Name",
+          "type": "semantic_model.column",
+          "data_type": "String",
+          "description": "Month name, January to December.",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

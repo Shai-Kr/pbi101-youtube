@@ -1,0 +1,120 @@
+/// Sales facts: one row per order line from Aurora Outdoor, a made-up outdoor gear company. January 1, 2025 to October 31, 2026. All amounts are in US dollars.
+table Sales
+
+	/// Total sales in US dollars: units times the selling price after discount. Use this for sales, revenue or turnover.
+	measure Revenue = SUM(Sales[Sales Amount])
+		formatString: \$#,0;(\$#,0);\$#,0
+
+	/// Total cost of the goods sold, in US dollars.
+	measure Cost = SUM(Sales[Cost Amount])
+		formatString: \$#,0;(\$#,0);\$#,0
+
+	/// Revenue minus cost, in US dollars (gross profit).
+	measure 'Gross Margin' = [Revenue] - [Cost]
+		formatString: \$#,0;(\$#,0);\$#,0
+
+	/// Gross margin as a percentage of revenue (Gross Margin divided by Revenue).
+	measure 'Margin %' = DIVIDE([Gross Margin], [Revenue])
+		formatString: 0.0%;-0.0%;0.0%
+
+	/// Number of orders.
+	measure Orders = DISTINCTCOUNT(Sales[Order ID])
+		formatString: #,0
+
+	/// Number of units sold.
+	measure Units = SUM(Sales[Quantity])
+		formatString: #,0
+
+	/// Average revenue per order, in US dollars.
+	measure 'Avg Order Value' = DIVIDE([Revenue], [Orders])
+		formatString: \$#,0;(\$#,0);\$#,0
+
+	/// Revenue for the same dates one year earlier.
+	measure 'Revenue PY' = CALCULATE([Revenue], SAMEPERIODLASTYEAR('Date'[Date]))
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Time comparisons
+
+	/// Revenue growth versus the same dates one year earlier, as a percentage.
+	measure 'Revenue YoY %' = DIVIDE([Revenue] - [Revenue PY], [Revenue PY])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Time comparisons
+
+	/// Order number (one per order line).
+	column 'Order ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: Order ID
+
+	/// Date the order was placed. Related to the Date table.
+	column 'Order Date'
+		dataType: dateTime
+		formatString: Short Date
+		summarizeBy: none
+		sourceColumn: Order Date
+
+	/// Key to the Products table.
+	column 'Product ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: Product ID
+
+	/// Key to the Regions table.
+	column 'Region ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: Region ID
+
+	/// Units on the order line. Use the Units measure.
+	column Quantity
+		dataType: int64
+		isHidden
+		formatString: #,0
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+	/// Selling price per unit after discount, in US dollars.
+	column 'Unit Price'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		summarizeBy: none
+		sourceColumn: Unit Price
+
+	/// Cost per unit, in US dollars.
+	column 'Unit Cost'
+		dataType: double
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		summarizeBy: none
+		sourceColumn: Unit Cost
+
+	/// Line revenue in US dollars. Use the Revenue measure.
+	column 'Sales Amount'
+		dataType: double
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		summarizeBy: sum
+		sourceColumn: Sales Amount
+
+	/// Line cost in US dollars. Use the Cost measure.
+	column 'Cost Amount'
+		dataType: double
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		summarizeBy: sum
+		sourceColumn: Cost Amount
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com", [RelativePath = DataRoot & "/sales.csv"]), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Order ID", Int64.Type}, {"Order Date", type date}, {"Product ID", Int64.Type}, {"Region ID", Int64.Type}, {"Quantity", Int64.Type}, {"Unit Price", type number}, {"Unit Cost", type number}, {"Sales Amount", type number}, {"Cost Amount", type number}}, "en-US")
+				in
+					Typed

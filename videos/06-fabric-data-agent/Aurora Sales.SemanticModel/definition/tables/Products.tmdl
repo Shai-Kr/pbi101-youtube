@@ -1,0 +1,33 @@
+/// The 12 products Aurora Outdoor sells, in 4 categories: Camping, Hiking, Apparel and Accessories.
+table Products
+
+	/// Product key.
+	column 'Product ID'
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: Product ID
+
+	/// Product name, for example Summit 2P Tent or Headlamp Pro.
+	column Product
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Product
+
+	/// Product category: Camping, Hiking, Apparel or Accessories.
+	column Category
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Category
+
+	partition Products = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com", [RelativePath = DataRoot & "/products.csv"]), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Product ID", Int64.Type}, {"Product", type text}, {"Category", type text}}, "en-US")
+				in
+					Typed

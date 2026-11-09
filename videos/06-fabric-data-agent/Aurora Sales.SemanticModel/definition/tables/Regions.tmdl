@@ -1,0 +1,27 @@
+/// The 4 sales regions: North America, Europe, Asia Pacific and Latin America.
+table Regions
+
+	/// Region key.
+	column 'Region ID'
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: Region ID
+
+	/// Sales region: North America, Europe, Asia Pacific or Latin America.
+	column Region
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Region
+
+	partition Regions = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(Web.Contents("https://raw.githubusercontent.com", [RelativePath = DataRoot & "/regions.csv"]), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					Typed = Table.TransformColumnTypes(Headers, {{"Region ID", Int64.Type}, {"Region", type text}}, "en-US")
+				in
+					Typed

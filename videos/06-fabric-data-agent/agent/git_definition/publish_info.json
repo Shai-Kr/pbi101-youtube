@@ -1,0 +1,4 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/publishInfo/1.0.0/schema.json",
+  "description": "Answers sales questions for Aurora Outdoor's regional sales managers: revenue, orders, units and margin by region, product and month, on the Aurora Sales model."
+}
