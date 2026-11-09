@@ -1,5 +1,7 @@
 # Build a Fabric data agent in 5 minutes (then do this before production)
 
+🎬 **Watch the video: https://youtu.be/KOMo49vQUAc**
+
 Materials for the PBI101 video. A **Fabric data agent** on a Power BI semantic model: you ask in plain English,
 the agent writes DAX against the model, runs it and answers in words. Then the 6 checks before real users get it.
 Demo data: **Aurora Outdoor**, a made-up outdoor gear company (12 products, 4 regions, Jan 2025 - Oct 2026), the same
