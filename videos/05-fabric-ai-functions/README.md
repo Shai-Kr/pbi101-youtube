@@ -1,5 +1,7 @@
 # ChatGPT inside your SQL query: AI functions in Fabric Data Warehouse
 
+🎬 **Watch the video: https://youtu.be/tG6wGB8_YcI**
+
 Materials for the PBI101 video. Fabric Warehouse has AI functions in plain T-SQL (`AI_ANALYZE_SENTIMENT`,
 `AI_CLASSIFY`, `AI_EXTRACT`, `AI_SUMMARIZE`, `AI_TRANSLATE`, `AI_FIX_GRAMMAR`, `AI_GENERATE_RESPONSE`): a GPT model
 reads every row and the answer comes back as a column. Everything here is synthetic demo data: **Toastly**, a made-up
