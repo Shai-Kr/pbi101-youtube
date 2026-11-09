@@ -1,0 +1,17 @@
+product_id,product_name,category,price
+1,SmartToast 2-Slice Toaster,Toasters,49.99
+2,SmartToast 4-Slice Toaster,Toasters,79.99
+3,AirCrisp 5L Air Fryer,Air Fryers,119.0
+4,AirCrisp XL Dual Air Fryer,Air Fryers,189.0
+5,BrewMate Espresso Machine,Coffee,329.0
+6,BrewMate Milk Frother,Coffee,59.99
+7,KettlePro Glass Kettle,Kettles,44.99
+8,KettlePro Temp Control Kettle,Kettles,89.99
+9,BlendMax 1200 Blender,Blenders,99.0
+10,BlendMax Go Portable Blender,Blenders,39.99
+11,RiceRight Rice Cooker,Cookers,69.99
+12,SlowJoe 6Qt Slow Cooker,Cookers,64.99
+13,ChopChop Food Processor,Prep,129.0
+14,WaffleWiz Waffle Maker,Breakfast,54.99
+15,ScaleSmart Kitchen Scale,Prep,24.99
+16,IceDream Ice Cream Maker,Desserts,149.0
