@@ -1,5 +1,7 @@
 # Connect ChatGPT to Power BI with a Fabric data agent (MCP)
 
+🎬 **Watch the video: https://youtu.be/FdP5rTgeqC4**
+
 Materials for the PBI101 video, the follow-up to [Build a Fabric data agent in 5 minutes](https://youtu.be/KOMo49vQUAc)
 (folder `06-fabric-data-agent`). A **published** Fabric data agent has its own **MCP endpoint**. Any chat app that speaks
 MCP can call it. Here: ChatGPT, with one plain question and one one-off HTML report, both with real numbers from the
