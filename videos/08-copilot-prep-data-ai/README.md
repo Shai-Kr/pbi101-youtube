@@ -1,6 +1,6 @@
 # Make Power BI Copilot answer right: Prep data for AI
 
-YouTube link: coming soon
+[Watch on YouTube](https://youtu.be/Ybn1boUXbt4)
 
 Copilot in the Power BI service told me revenue grew **143%** this year. The real number was **18.8%**. Nothing was
 wrong with the model: Copilot just didn't know our fiscal year starts in February, or what "this year" means. Prep
