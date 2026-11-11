@@ -1,6 +1,6 @@
 # 09 · Copilot builds a Power BI report from a prompt (and one trap)
 
-Video: (link added after the upload)
+Video: https://youtu.be/6HiZLJL3kQI
 
 A report built with Copilot in the Power BI service (Microsoft Fabric), from an existing semantic model: two pages,
 edited with prompts, a dark theme, saved to the workspace. Plus the part that went wrong: a "fiscal year to date" page
