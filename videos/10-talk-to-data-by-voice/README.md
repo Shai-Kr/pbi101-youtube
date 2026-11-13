@@ -1,5 +1,7 @@
 # I Asked My Power BI Data Out Loud. It Answered.
 
+🎬 **Watch the video: https://youtu.be/8n7tPQphRkA**
+
 Materials for the PBI101 video about **talking to a Power BI semantic model by voice**: ChatGPT voice chat, calling a
 Microsoft Fabric data agent through its MCP endpoint. It's less of a tutorial and more of a thought: what changes when
 your data can talk back, and where that is useful (picture a CEO on the drive to the office).
