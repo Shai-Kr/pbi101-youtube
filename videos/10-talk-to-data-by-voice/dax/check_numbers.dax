@@ -1,0 +1,40 @@
+// The DAX behind questions.md. Run each query in DAX query view (Power BI Desktop) on the Aurora Sales model
+// (the model itself is in ../09-copilot-build-report). The fiscal year starts on February 1; the data ends October 31, 2026.
+
+// 1. Fiscal year to date vs the same dates last year
+EVALUATE
+ROW(
+    "Revenue FY", CALCULATE([Revenue], DATESBETWEEN('Date'[Date], DATE(2026,2,1), DATE(2026,10,31))),
+    "Revenue PY", CALCULATE([Revenue], DATESBETWEEN('Date'[Date], DATE(2025,2,1), DATE(2025,10,31))),
+    "Margin % FY", CALCULATE([Margin %], DATESBETWEEN('Date'[Date], DATE(2026,2,1), DATE(2026,10,31))),
+    "Margin % PY", CALCULATE([Margin %], DATESBETWEEN('Date'[Date], DATE(2025,2,1), DATE(2025,10,31)))
+)
+
+// 2. The months of this fiscal year, best first
+EVALUATE
+SUMMARIZECOLUMNS(
+    'Date'[Year], 'Date'[Month Number], 'Date'[Month Name],
+    FILTER(ALL('Date'), 'Date'[Date] >= DATE(2026,2,1) && 'Date'[Date] <= DATE(2026,10,31)),
+    "Revenue", [Revenue], "Orders", [Orders], "Avg Order Value", [Avg Order Value]
+)
+ORDER BY [Revenue] DESC
+
+// 3. June 2026 by category and by region
+EVALUATE
+SUMMARIZECOLUMNS(Products[Category], "Revenue", CALCULATE([Revenue], DATESBETWEEN('Date'[Date], DATE(2026,6,1), DATE(2026,6,30))))
+ORDER BY [Revenue] DESC
+
+EVALUATE
+SUMMARIZECOLUMNS(Regions[Region], "Revenue", CALCULATE([Revenue], DATESBETWEEN('Date'[Date], DATE(2026,6,1), DATE(2026,6,30))))
+ORDER BY [Revenue] DESC
+
+// 4. Region x category, fiscal year to date vs last year (the "one thing to fix" question)
+EVALUATE
+SUMMARIZECOLUMNS(
+    Regions[Region], Products[Category],
+    "Revenue FY", CALCULATE([Revenue], DATESBETWEEN('Date'[Date], DATE(2026,2,1), DATE(2026,10,31))),
+    "Revenue PY", CALCULATE([Revenue], DATESBETWEEN('Date'[Date], DATE(2025,2,1), DATE(2025,10,31))),
+    "Margin % FY", CALCULATE([Margin %], DATESBETWEEN('Date'[Date], DATE(2026,2,1), DATE(2026,10,31))),
+    "Margin % PY", CALCULATE([Margin %], DATESBETWEEN('Date'[Date], DATE(2025,2,1), DATE(2025,10,31)))
+)
+ORDER BY Regions[Region], Products[Category]
