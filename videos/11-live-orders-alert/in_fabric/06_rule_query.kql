@@ -1,0 +1,7 @@
+// Returns a region only in the minute it stopped:
+// no orders in the last 10 minutes, but at least one in the minute before that.
+OrdersLive
+| where OrderTime > ago(11m)
+| summarize Last10Min = countif(OrderTime > ago(10m)), MinuteBefore = countif(OrderTime <= ago(10m)) by Region
+| where Last10Min == 0 and MinuteBefore > 0
+| project Region

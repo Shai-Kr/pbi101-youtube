@@ -1,0 +1,11 @@
+// Returns a city only in the minute rain started there:
+// a rainy reading arrived in the last minute, and no reading in the 30 minutes before it was rainy.
+let fresh = WeatherLive
+    | where IntervalMin == 15 and ingestion_time() > ago(1m) and RainRate >= 0.4
+    | summarize arg_max(ReadingTime, RainRate, TempC) by City;
+let alreadyWet = WeatherLive
+    | where IntervalMin == 15 and ReadingTime > ago(31m) and ingestion_time() <= ago(1m) and RainRate >= 0.4
+    | distinct City;
+fresh
+| join kind=leftanti alreadyWet on City
+| project City, RainRate, TempC

@@ -1,0 +1,6 @@
+WeatherLive
+| where IntervalMin == 15 and ReadingTime > ago(1h)
+| summarize arg_max(ReadingTime, *) by City
+| project Longitude, Latitude,
+          Weather = iff(RainRate >= 0.4, "Raining now", iff(TempC < 5, "Cold", iff(TempC > 26, "Hot", "Mild"))),
+          Size = iff(RainRate >= 0.4, 3.0, 1.0)

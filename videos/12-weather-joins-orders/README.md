@@ -10,7 +10,21 @@ and built to react to weather, so the pattern the agent finds is planted. The pl
 
 Weather data by [Open-Meteo.com](https://open-meteo.com) (CC BY 4.0; free for non-commercial use, no key).
 
-## What is in this folder
+## The easy way: everything inside Fabric (`in_fabric/`)
+
+This is the path the blog guide follows. Nothing is installed on your computer.
+
+| File | Where it goes |
+|---|---|
+| `in_fabric/Aurora_Store_With_Weather.ipynb` | The store plus the weather feed as one Fabric notebook (it replaces part 1's notebook). Import it, paste the two connection strings into the first cell, Run all. The first run also sends 28 days of real weather history |
+| `in_fabric/weather_cell1_settings.py`, `weather_cell2_history.py`, `weather_cell3_run.py` | The same three cells as text |
+| `in_fabric/01_create_weather_table.kql` | Creates the table `WeatherLive` |
+| `in_fabric/02_weather_orders_history.kql` | What the simulated shoppers did with the real weather of the last 28 days (run it after the weather history arrived) |
+| `in_fabric/03_rain_vs_dry.kql` | The join: rain jackets per hour, rainy hours next to dry hours |
+| `in_fabric/04_rain_rule_query.kql` | The query behind the rule "Rain started in a city" |
+| `in_fabric/05_...`, `06_...` | The weather tiles of the dashboard (table and map) |
+
+## The scripts (how the videos were built)
 
 | File | What it does |
 |---|---|

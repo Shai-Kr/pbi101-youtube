@@ -1,0 +1,4 @@
+.create-merge table WeatherLive (
+    ReadingTime: datetime, City: string, Region: string, Latitude: real, Longitude: real,
+    TempC: real, PrecipMm: real, RainRate: real, SnowCm: real, WindKmh: real,
+    WeatherCode: long, Condition: string, IntervalMin: long, Source: string)

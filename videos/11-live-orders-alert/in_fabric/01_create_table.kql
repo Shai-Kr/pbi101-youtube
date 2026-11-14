@@ -1,0 +1,5 @@
+.create-merge table OrdersLive (
+    OrderId: string, OrderTime: datetime, ProductId: long, Product: string,
+    Category: string, RegionId: long, Region: string, City: string,
+    Quantity: long, UnitPrice: real, SalesAmount: real,
+    PaymentMethod: string, Channel: string)

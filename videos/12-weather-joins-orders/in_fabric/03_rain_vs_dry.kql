@@ -1,0 +1,12 @@
+// Rain jackets sold per hour in every city: rainy hours next to dry hours (28 days).
+let weather = WeatherLive
+    | where IntervalMin == 60
+    | project City, Hour = ReadingTime - 1h, Rainy = RainRate >= 0.4;
+weather
+| join kind=leftouter (
+    OrdersLive
+    | where Product == "Storm Shell Jacket"
+    | summarize Units = sum(Quantity) by City, Hour = bin(OrderTime, 1h)
+  ) on City, Hour
+| summarize Hours = count(), JacketsPerHour = round(avg(coalesce(Units, 0)), 2) by City, Rainy
+| order by City asc, Rainy asc

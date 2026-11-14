@@ -1,0 +1,5 @@
+OrdersLive
+| where OrderTime >= bin(ago(30m), 1m) and OrderTime < bin(now(), 1m)
+| make-series Orders = count() default = 0 on OrderTime from bin(ago(30m), 1m) to bin(now(), 1m) step 1m by Region
+| mv-expand OrderTime to typeof(datetime), Orders to typeof(long)
+| project OrderTime, Region, Orders

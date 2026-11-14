@@ -17,7 +17,20 @@ store / phone page --> Eventstream --> Eventhouse (KQL table OrdersLive) --> Rea
                               tool: a Fabric data agent that queries OrdersLive
 ```
 
-## What is in this folder
+## The easy way: everything inside Fabric (`in_fabric/`)
+
+This is the path the blog guide follows. Nothing is installed on your computer.
+
+| File | Where it goes |
+|---|---|
+| `in_fabric/Aurora_Store.ipynb` | The simulated store as a Fabric notebook. Import it into your workspace, paste the connection string of your Eventstream into the first cell, Run all |
+| `in_fabric/store_cell1_settings.py`, `store_cell2_run.py` | The same two cells as text, if you prefer to paste them into a new notebook |
+| `in_fabric/01_create_table.kql` | Paste into the KQL database's query editor: creates the table `OrdersLive` |
+| `in_fabric/02_history.kql` | 28 days of history, generated inside the Eventhouse by one statement |
+| `in_fabric/03_...`, `04_...`, `05_...` | The queries of the dashboard tiles |
+| `in_fabric/06_rule_query.kql` | The query behind the Activator rule (returns a region only in the minute it stopped) |
+
+## The scripts (how the videos were built)
 
 | File | What it does |
 |---|---|

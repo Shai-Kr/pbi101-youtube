@@ -1,0 +1,5 @@
+WeatherLive
+| where IntervalMin == 15 and ReadingTime > ago(1h)
+| summarize arg_max(ReadingTime, *) by City
+| project City, ['Temp (C)'] = TempC, ['Rain (mm/h)'] = RainRate, Condition, ['As of'] = ReadingTime
+| order by ['Rain (mm/h)'] desc, City asc

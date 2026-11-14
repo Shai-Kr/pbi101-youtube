@@ -1,0 +1,3 @@
+OrdersLive
+| where OrderTime > ago(1m)
+| summarize ['Orders in the last minute'] = count()
