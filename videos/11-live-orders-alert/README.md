@@ -23,6 +23,7 @@ This is the path the blog guide follows. Nothing is installed on your computer.
 
 | File | Where it goes |
 |---|---|
+| `in_fabric/Aurora_Everything.ipynb` | **The fast path: one notebook that builds the whole Fabric part.** Import it into an empty workspace and click Run all: Eventhouse and tables, both Eventstreams, 28 days of history, the dashboard, the data agent and the rules (created stopped). Then it opens the store. Nothing to paste; safe to run again |
 | `in_fabric/Aurora_Store.ipynb` | The simulated store as a Fabric notebook. Import it into your workspace, paste the connection string of your Eventstream into the first cell, Run all |
 | `in_fabric/store_cell1_settings.py`, `store_cell2_run.py` | The same two cells as text, if you prefer to paste them into a new notebook |
 | `in_fabric/01_create_table.kql` | Paste into the KQL database's query editor: creates the table `OrdersLive` |

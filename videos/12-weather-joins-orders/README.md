@@ -16,6 +16,7 @@ This is the path the blog guide follows. Nothing is installed on your computer.
 
 | File | Where it goes |
 |---|---|
+| `../11-live-orders-alert/in_fabric/Aurora_Everything.ipynb` | **The fast path** (in part 1's folder): one notebook builds parts 1 and 2 in Fabric, weather included. Import it into an empty workspace, Run all |
 | `in_fabric/Aurora_Store_With_Weather.ipynb` | The store plus the weather feed as one Fabric notebook (it replaces part 1's notebook). Import it, paste the two connection strings into the first cell, Run all. The first run also sends 28 days of real weather history |
 | `in_fabric/weather_cell1_settings.py`, `weather_cell2_history.py`, `weather_cell3_run.py` | The same three cells as text |
 | `in_fabric/01_create_weather_table.kql` | Creates the table `WeatherLive` |
