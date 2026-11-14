@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurora Outdoor - store app (demo)</title>
+<style>
+  :root { --navy:#0B1830; --ink:#0D1A30; --cyan:#29B6E8; --ice:#6FE3FF; --amber:#FFB547; --teal:#1FD1C2;
+          --red:#E5484D; --text:#F5FAFF; --mute:#9DB2CC; --card:#13264A; --line:rgba(111,227,255,0.18); }
+  * { box-sizing:border-box; }
+  html, body { height:100%; margin:0; }
+  body { font-family:"Segoe UI", system-ui, sans-serif; color:var(--text); overflow:hidden;
+    background:
+      radial-gradient(circle 520px at 82% 14%, rgba(255,181,71,0.16) 0%, rgba(255,181,71,0) 70%),
+      radial-gradient(ellipse 720px 560px at 12% 92%, rgba(41,182,232,0.24) 0%, rgba(41,182,232,0) 75%),
+      linear-gradient(160deg, #070E1C 0%, #0B1830 45%, #0E2A4A 78%, #12406A 100%); }
+  body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.5;
+    background-image:linear-gradient(rgba(111,227,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(111,227,255,.06) 1px, transparent 1px);
+    background-size:44px 44px; }
+  .stage { position:relative; height:100%; display:flex; align-items:center; justify-content:center; gap:44px; padding:24px; }
+
+  /* phone */
+  .phone { position:relative; width:372px; height:764px; border-radius:56px; background:#05080F; padding:12px; flex:none;
+    box-shadow:0 0 0 2px #2A3B57, 0 0 0 9px #0A1220, 0 0 0 11px #31456A, 0 40px 80px rgba(0,0,0,.65); }
+  .phone::before { content:""; position:absolute; left:50%; top:22px; width:108px; height:30px; margin-left:-54px;
+    border-radius:18px; background:#05080F; z-index:5; }
+  .screen { position:relative; width:100%; height:100%; border-radius:45px; overflow:hidden; display:flex; flex-direction:column;
+    background:linear-gradient(180deg, #0F2244 0%, #0B1830 38%); }
+  .status { height:50px; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 7px; font-size:14px; font-weight:600; }
+  .status .r { display:flex; gap:6px; align-items:center; }
+  .bars { display:flex; gap:2px; align-items:flex-end; height:11px; }
+  .bars i { width:3px; background:var(--text); border-radius:1px; }
+  .batt { width:24px; height:11px; border:1.5px solid var(--text); border-radius:3px; padding:1px; }
+  .batt i { display:block; width:78%; height:100%; background:var(--text); border-radius:1px; }
+  .head { padding:10px 20px 12px; }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .logo { width:36px; height:36px; border-radius:11px; background:linear-gradient(135deg, var(--amber), #FF8A3D); display:grid; place-items:center; }
+  .brand b { font-size:20px; letter-spacing:-.01em; }
+  .brand span { display:block; font-size:12px; color:var(--mute); font-weight:600; }
+  .ticker { margin-top:12px; display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--mute); font-weight:600;
+    background:rgba(7,14,28,.6); border:1px solid var(--line); border-radius:12px; padding:8px 12px; }
+  .dot { width:8px; height:8px; border-radius:50%; background:var(--teal); box-shadow:0 0 0 0 rgba(31,209,194,.7); animation:pulse 1.6s infinite; }
+  @keyframes pulse { 70% { box-shadow:0 0 0 8px rgba(31,209,194,0); } 100% { box-shadow:0 0 0 0 rgba(31,209,194,0); } }
+  .ticker b { color:var(--text); font-variant-numeric:tabular-nums; }
+  .ticker b.bump { animation:bump .6s; }
+  @keyframes bump { 30% { color:var(--amber); transform:scale(1.18); } }
+  .ship { padding:0 20px 8px; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--mute); font-weight:600; }
+  .ship select { appearance:none; background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:10px;
+    padding:6px 28px 6px 10px; font:inherit; font-weight:700; cursor:pointer;
+    background-image:linear-gradient(45deg, transparent 50%, var(--ice) 50%), linear-gradient(135deg, var(--ice) 50%, transparent 50%);
+    background-position:calc(100% - 15px) 13px, calc(100% - 10px) 13px; background-size:5px 5px; background-repeat:no-repeat; }
+  .list { flex:1; overflow:auto; padding:4px 14px 96px; scrollbar-width:none; }
+  .list::-webkit-scrollbar { display:none; }
+  .item { display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:10px 10px 10px 10px; margin-bottom:10px; }
+  .tile { width:54px; height:54px; border-radius:14px; display:grid; place-items:center; flex:none; }
+  .Camping { background:linear-gradient(135deg, #1FD1C2, #0E8F9A); } .Hiking { background:linear-gradient(135deg, #7C8CF8, #4B55C9); }
+  .Apparel { background:linear-gradient(135deg, #FFB547, #F2762E); } .Accessories { background:linear-gradient(135deg, #29B6E8, #1672C4); }
+  .info { flex:1; min-width:0; }
+  .info b { display:block; font-size:14.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .info span { font-size:12px; color:var(--mute); font-weight:600; }
+  .info i { font-style:normal; color:var(--ice); font-weight:800; font-size:14px; margin-left:6px; }
+  .buy { border:0; cursor:pointer; font:inherit; font-weight:800; font-size:13.5px; color:#0B1830; background:var(--amber);
+    border-radius:12px; padding:10px 14px; min-width:68px; transition:transform .08s, background .2s; }
+  .buy:active { transform:scale(.94); }
+  .buy.busy { background:#7D8CA3; color:#0B1830; }
+  .buy.done { background:var(--teal); }
+
+  /* bottom sheet */
+  .sheet { position:absolute; left:10px; right:10px; bottom:10px; border-radius:26px; padding:14px 16px 16px;
+    background:rgba(245,250,255,.98); color:#0B1830; box-shadow:0 -10px 40px rgba(0,0,0,.45);
+    transform:translateY(130%); transition:transform .35s cubic-bezier(.2,.9,.3,1.2); }
+  .sheet.on { transform:none; }
+  .sheet h4 { margin:0 0 4px; font-size:16px; display:flex; align-items:center; gap:8px; }
+  .ok { width:22px; height:22px; border-radius:50%; background:#0B6B3A; display:grid; place-items:center; flex:none; }
+  .sheet p { margin:2px 0 0; font-size:13px; color:#4A5B72; font-weight:600; }
+  .sheet code { font-family:Consolas, monospace; font-size:12.5px; color:#0B1830; }
+  .home { position:absolute; left:50%; bottom:7px; width:120px; height:4px; margin-left:-60px; border-radius:3px; background:rgba(245,250,255,.55); z-index:6; }
+
+  /* side panel: the event */
+  .side { width:400px; flex:none; }
+  .side h2 { margin:0 0 6px; font-size:15px; letter-spacing:.14em; color:var(--ice); font-weight:800; }
+  .side .sub { margin:0 0 14px; color:var(--mute); font-size:14px; font-weight:600; }
+  .json { background:rgba(7,14,28,.78); border:1px solid var(--line); border-radius:18px; padding:16px 18px; min-height:330px;
+    font-family:Consolas, "Cascadia Mono", monospace; font-size:14px; line-height:1.55; white-space:pre-wrap; color:#C9D8E8; }
+  .json .k { color:var(--ice); } .json .s { color:var(--amber); } .json .n { color:var(--teal); }
+  .json.idle { color:var(--mute); display:grid; place-items:center; font-family:"Segoe UI", sans-serif; font-weight:600; }
+  .steps { margin-top:14px; display:grid; gap:8px; }
+  .step { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:700; color:var(--mute);
+    background:rgba(7,14,28,.6); border:1px solid var(--line); border-radius:14px; padding:10px 14px; }
+  .step .n { width:24px; height:24px; border-radius:50%; background:#22355A; color:var(--text); display:grid; place-items:center; font-size:13px; flex:none; }
+  .step .t { margin-left:auto; font-variant-numeric:tabular-nums; color:var(--mute); font-weight:600; }
+  .step.on { color:var(--text); border-color:rgba(31,209,194,.6); } .step.on .n { background:var(--teal); color:#0B1830; }
+  .step.wait .n { background:var(--amber); color:#0B1830; animation:blink 1s infinite; }
+  @keyframes blink { 50% { opacity:.45; } }
+  .note { margin-top:12px; font-size:12.5px; color:var(--mute); font-weight:600; }
+  @media (max-width: 860px) { .side { display:none; } }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone">
+    <div class="screen">
+      <div class="status"><span id="clock">9:41</span>
+        <span class="r"><span class="bars"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:11px"></i></span>
+        <span>5G</span><span class="batt"><i></i></span></span></div>
+      <div class="head">
+        <div class="brand"><div class="logo"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 20 L10 6 L14 13 L17 9 L21 20 Z" fill="#0B1830"/></svg></div>
+          <div><b>Aurora Outdoor</b><span>Online store</span></div></div>
+        <div class="ticker"><span class="dot"></span>Orders in the last hour <b id="orders">-</b></div>
+      </div>
+      <div class="ship">Deliver to <select id="city"></select></div>
+      <div class="list" id="list"></div>
+      <div class="sheet" id="sheet"><h4><span class="ok"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M4 12.5 L10 18 L20 6" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Order placed</h4>
+        <p id="sheet1"></p><p id="sheet2"></p></div>
+      <div class="home"></div>
+    </div>
+  </div>
+
+  <div class="side">
+    <h2>WHAT THE APP SENT</h2>
+    <p class="sub">One order = one event. Nothing else.</p>
+    <div class="json idle" id="json">Tap Buy on the phone.</div>
+    <div class="steps">
+      <div class="step" id="s1"><span class="n">1</span>Sent by the app<span class="t" id="t1"></span></div>
+      <div class="step" id="s2"><span class="n">2</span>Received by the Eventstream<span class="t" id="t2"></span></div>
+      <div class="step" id="s3"><span class="n">3</span>Ready to query in the Eventhouse<span class="t" id="t3"></span></div>
+    </div>
+    <p class="note">Simulated store. The stream, the database and the timings are real.</p>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const ICON = {
+  Camping: '<path d="M3 20 L12 4 L21 20 Z M12 20 L12 12" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>',
+  Hiking: '<path d="M2 20 L9 8 L13 14 L16 10 L22 20 Z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>',
+  Apparel: '<path d="M8 4 L4 7 L6 11 L8 10 L8 20 L16 20 L16 10 L18 11 L20 7 L16 4 C15 6 9 6 8 4 Z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>',
+  Accessories: '<path d="M10 3 L14 3 L14 6 C16 7 17 9 17 11 L17 19 C17 20 16 21 15 21 L9 21 C8 21 7 20 7 19 L7 11 C7 9 8 7 10 6 Z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>'
+};
+const fmt = n => n.toLocaleString('en-US');
+const hms = d => d.toLocaleTimeString('en-GB');
+let lastOrders = null;
+
+function tick() { const d = new Date(); $('clock').textContent = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); }
+tick(); setInterval(tick, 5000);
+
+async function stats() {
+  try {
+    const s = await (await fetch('/stats')).json();
+    if (s.orders == null) return;
+    const el = $('orders');
+    if (lastOrders !== null && s.orders !== lastOrders) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+    el.textContent = fmt(s.orders); lastOrders = s.orders;
+  } catch (e) {}
+}
+
+function showJson(o) {
+  const el = $('json'); el.classList.remove('idle');
+  const lines = Object.entries(o).map(([k, v]) => '  <span class="k">"' + k + '"</span>: ' +
+    (typeof v === 'number' ? '<span class="n">' + v + '</span>' : '<span class="s">"' + v + '"</span>'));
+  el.innerHTML = '{\n' + lines.join(',\n') + '\n}';
+}
+function step(n, cls, t) { const s = $('s' + n); s.className = 'step ' + cls; $('t' + n).textContent = t || ''; }
+
+async function buy(btn, product) {
+  if (btn.classList.contains('busy')) return;
+  btn.className = 'buy busy'; btn.textContent = '...';
+  [1, 2, 3].forEach(n => step(n, '', ''));
+  const t0 = performance.now(), sent = new Date();
+  step(1, 'on', hms(sent)); step(2, 'wait', '');
+  let r;
+  try {
+    r = await (await fetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product, city: $('city').value, qty: 1 }) })).json();
+  } catch (e) { r = { error: 'no connection to the relay' }; }
+  if (!r.order) { btn.className = 'buy'; btn.textContent = 'Buy'; step(2, '', 'failed'); return; }
+  showJson(r.order);
+  step(2, 'on', ((performance.now() - t0) / 1000).toFixed(1) + ' s'); step(3, 'wait', '');
+  btn.className = 'buy done'; btn.textContent = 'Done';
+  $('sheet1').innerHTML = product + ' to ' + $('city').value + ' &middot; <code>' + r.order.OrderId + '</code>';
+  $('sheet2').textContent = 'Sent ' + hms(sent) + '. Waiting for Fabric...';
+  $('sheet').classList.add('on');
+  for (let i = 0; i < 40; i++) {
+    await new Promise(res => setTimeout(res, 700));
+    let s = {};
+    try { s = await (await fetch('/seen?id=' + encodeURIComponent(r.order.OrderId))).json(); } catch (e) {}
+    if (s.seen) {
+      // wall-clock time from the tap until this page's own query found the row (checked every 0.7 s)
+      const found = ((performance.now() - t0) / 1000).toFixed(1);
+      step(3, 'on', found + ' s');
+      $('sheet2').textContent = 'Found in Microsoft Fabric ' + found + ' s after you tapped.';
+      stats(); break;
+    }
+  }
+  setTimeout(() => { btn.className = 'buy'; btn.textContent = 'Buy'; }, 2500);
+  setTimeout(() => $('sheet').classList.remove('on'), 9000);
+}
+
+(async function init() {
+  const c = await (await fetch('/config')).json();
+  $('city').innerHTML = c.cities.map(x => '<option' + (x === 'Vancouver' ? ' selected' : '') + '>' + x + '</option>').join('');
+  $('list').innerHTML = c.products.map(p =>
+    '<div class="item"><div class="tile ' + p.cat + '"><svg width="30" height="30" viewBox="0 0 24 24">' + ICON[p.cat] + '</svg></div>' +
+    '<div class="info"><b>' + p.name + '</b><span>' + p.cat + '</span><i>$' + fmt(p.price) + '</i></div>' +
+    '<button class="buy">Buy</button></div>').join('');
+  [...document.querySelectorAll('.buy')].forEach((b, i) => b.addEventListener('click', () => buy(b, c.products[i].name)));
+  stats(); setInterval(stats, 5000);
+})();
+</script>
+</body>
+</html>

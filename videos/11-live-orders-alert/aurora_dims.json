@@ -1,0 +1,122 @@
+{
+ "products": [
+  {
+   "Products[Product ID]": 1,
+   "Products[Product]": "Summit 2P Tent",
+   "Products[Category]": "Camping",
+   "[Price]": 330.9933425797504,
+   "[Units]": 9397
+  },
+  {
+   "Products[Product ID]": 2,
+   "Products[Product]": "Basecamp 6P Tent",
+   "Products[Category]": "Camping",
+   "[Price]": 667.1141095890407,
+   "[Units]": 5037
+  },
+  {
+   "Products[Product ID]": 3,
+   "Products[Product]": "Arctic Sleeping Bag",
+   "Products[Category]": "Camping",
+   "[Price]": 217.24232245681384,
+   "[Units]": 6987
+  },
+  {
+   "Products[Product ID]": 4,
+   "Products[Product]": "Trailhead 45L Pack",
+   "Products[Category]": "Hiking",
+   "[Price]": 179.13682735426008,
+   "[Units]": 12024
+  },
+  {
+   "Products[Product ID]": 5,
+   "Products[Product]": "Ridge Trekking Poles",
+   "Products[Category]": "Hiking",
+   "[Price]": 84.72686804451509,
+   "[Units]": 8487
+  },
+  {
+   "Products[Product ID]": 6,
+   "Products[Product]": "Alpine Hiking Boots",
+   "Products[Category]": "Hiking",
+   "[Price]": 208.1480179028132,
+   "[Units]": 10438
+  },
+  {
+   "Products[Product ID]": 7,
+   "Products[Product]": "Storm Shell Jacket",
+   "Products[Category]": "Apparel",
+   "[Price]": 246.9026748971193,
+   "[Units]": 10099
+  },
+  {
+   "Products[Product ID]": 8,
+   "Products[Product]": "Thermal Base Layer",
+   "Products[Category]": "Apparel",
+   "[Price]": 75.15239282153539,
+   "[Units]": 13285
+  },
+  {
+   "Products[Product ID]": 9,
+   "Products[Product]": "Summit Fleece",
+   "Products[Category]": "Apparel",
+   "[Price]": 122.38298397040684,
+   "[Units]": 11394
+  },
+  {
+   "Products[Product ID]": 10,
+   "Products[Product]": "Glacier Water Bottle",
+   "Products[Category]": "Accessories",
+   "[Price]": 33.35022026431718,
+   "[Units]": 15377
+  },
+  {
+   "Products[Product ID]": 11,
+   "Products[Product]": "Headlamp Pro",
+   "Products[Category]": "Accessories",
+   "[Price]": 55.9627417519909,
+   "[Units]": 12022
+  },
+  {
+   "Products[Product ID]": 12,
+   "Products[Product]": "Trail First-Aid Kit",
+   "Products[Category]": "Accessories",
+   "[Price]": 42.85258358662614,
+   "[Units]": 9181
+  }
+ ],
+ "regions": [
+  {
+   "Regions[Region ID]": 3,
+   "Regions[Region]": "Asia Pacific",
+   "[Orders]": 1631,
+   "[Revenue]": 3460611.7
+  },
+  {
+   "Regions[Region ID]": 2,
+   "Regions[Region]": "Europe",
+   "[Orders]": 2696,
+   "[Revenue]": 5742886.8
+  },
+  {
+   "Regions[Region ID]": 1,
+   "Regions[Region]": "North America",
+   "[Orders]": 3875,
+   "[Revenue]": 8382745.9
+  },
+  {
+   "Regions[Region ID]": 4,
+   "Regions[Region]": "Latin America",
+   "[Orders]": 923,
+   "[Revenue]": 1920745.2
+  }
+ ],
+ "range": [
+  {
+   "[MinDate]": "2025-01-01T00:00:00",
+   "[MaxDate]": "2026-10-31T00:00:00",
+   "[Orders]": 9125,
+   "[AvgQty]": 13.55923287671233
+  }
+ ]
+}

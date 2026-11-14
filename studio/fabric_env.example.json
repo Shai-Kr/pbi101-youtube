@@ -1,0 +1,9 @@
+{
+  "_comment": "Copy to ~/.pbi101/fabric_env.json (or point FABRIC_ENV_FILE at it) and fill in your own values. The scripts add the rest under realtime.",
+  "tenant_id": "",
+  "workspace": {"id": "YOUR-WORKSPACE-ID"},
+  "user": "you@your-tenant.example",
+  "realtime": {
+    "dataverse_url": "https://YOUR-ENVIRONMENT.crm.example"
+  }
+}
