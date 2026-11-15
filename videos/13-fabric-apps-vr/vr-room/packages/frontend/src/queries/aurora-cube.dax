@@ -1,0 +1,12 @@
+EVALUATE
+SUMMARIZECOLUMNS(
+    'Date'[Year],
+    'Date'[Month Number],
+    Regions[Region],
+    Products[Category],
+    Products[Product],
+    "Revenue", [Revenue],
+    "Cost", [Cost],
+    "Orders", [Orders],
+    "Units", [Units]
+)

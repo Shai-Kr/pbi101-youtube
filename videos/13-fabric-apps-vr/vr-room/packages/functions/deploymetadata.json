@@ -1,0 +1,50 @@
+{
+  "runtime": "TypeScript",
+  "functionsMetadata": [
+    {
+      "name": "askFabricDataAgent",
+      "scriptFile": "src\\function_app.ts",
+      "bindings": [
+        {
+          "name": "req",
+          "type": "httpTrigger",
+          "direction": "in",
+          "authLevel": "anonymous",
+          "methods": [
+            "post"
+          ],
+          "route": "askFabricDataAgent"
+        },
+        {
+          "name": "$return",
+          "type": "http",
+          "direction": "out"
+        },
+        {
+          "name": "__generic_Fabric",
+          "direction": "in",
+          "type": "FabricItem",
+          "alias": "",
+          "audienceType": "Fabric"
+        }
+      ],
+      "fabricProperties": {
+        "fabricMetadataSchemaVersion": "1.0",
+        "fabricFunctionReturnType": "Promise<DataAgentResult>",
+        "fabricFunctionParameters": [
+          {
+            "name": "ctx",
+            "dataType": "RayfinContext<AppSchema, AudienceType.Fabric>",
+            "hasDefaultValue": false
+          },
+          {
+            "name": "question",
+            "dataType": "string",
+            "hasDefaultValue": false
+          }
+        ]
+      },
+      "functionCode": "udf.func(\n  'askFabricDataAgent',\n  async (ctx: RayfinContext<AppSchema, AudienceType.Fabric>, question: string): Promise<DataAgentResult> => {\n    const q = (question ?? '').trim().slice(0, MAX_QUESTION);\n    if (q.length < 3) return { ok: false, answer: 'The question is too short.' };\n    const token: string = ctx.Tokens.Fabric;\n    // the platform stops a function at 250 seconds; stop the outbound call a little earlier\n    const signal = AbortSignal.timeout(235_000);\n    try {\n      const init = await postMcpRequest(\n        DATA_AGENT_MCP_ENDPOINT,\n        token,\n        {\n          jsonrpc: '2.0',\n          id: 1,\n          method: 'initialize',\n          params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'aurora-vr-room', version: '1.0.0' } },\n        },\n        signal\n      );\n      if (init.responseStatus === 401 || init.responseStatus === 403) {\n        return { ok: false, answer: 'The data agent refused the app (no permission on the agent or its data).' };\n      }\n      if (init.responseStatus >= 400) return { ok: false, answer: `The data agent did not start (status ${init.responseStatus}).` };\n      const session = init.sessionId ?? undefined;\n      await postMcpRequest(DATA_AGENT_MCP_ENDPOINT, token, { jsonrpc: '2.0', method: 'notifications/initialized' }, signal, session);\n\n      const list = await postMcpRequest(DATA_AGENT_MCP_ENDPOINT, token, { jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }, signal, session);\n      const tools = (list.body?.result as { tools?: { name?: string; inputSchema?: { properties?: Record<string, unknown>; required?: string[] } }[] } | undefined)?.tools;\n      const tool = tools?.[0];\n      if (!tool?.name) return { ok: false, answer: 'The data agent offered no tool to ask.' };\n      const props = Object.keys(tool.inputSchema?.properties ?? {});\n      const arg = tool.inputSchema?.required?.[0] ?? props.find((p) => /question|query|prompt|input|message/i.test(p)) ?? props[0] ?? 'question';\n\n      const call = await postMcpRequest(\n        DATA_AGENT_MCP_ENDPOINT,\n        token,\n        { jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: tool.name, arguments: { [arg]: q } } },\n        signal,\n        session\n      );\n      if (call.responseStatus >= 400) return { ok: false, answer: `The data agent failed to answer (status ${call.responseStatus}).` };\n      if (call.body?.error) return { ok: false, answer: 'The data agent reported an error for this question.' };\n      const content = (call.body?.result as { content?: { type?: string; text?: string }[]; isError?: boolean } | undefined)?.content ?? [];\n      const text = content\n        .filter((c) => c.type === 'text' && typeof c.text === 'string')\n        .map((c) => c.text as string)\n        .join('\\n')\n        .trim();\n      if (!text) return { ok: false, answer: 'The data agent returned no text.' };\n      return { ok: true, answer: text.slice(0, MAX_ANSWER) };\n    } catch (err) {\n      const name = err instanceof Error ? err.name : '';\n      return { ok: false, answer: name === 'TimeoutError' || name === 'AbortError' ? 'The data agent took too long (more than four minutes).' : 'The data agent could not be reached.' };\n    }\n  },\n  [] // the audience in the annotation is the declaration\n)"
+    }
+  ]
+}
