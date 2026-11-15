@@ -1,6 +1,6 @@
 # Fabric Apps, step by step, and a Power BI dashboard you can stand inside
 
-**Video:** I Put My Power BI Dashboard in VR (Fabric Apps Guide) (link coming with the upload)
+**Video:** [I Put My Power BI Dashboard in VR (Fabric Apps Guide)](https://youtu.be/wNoeba0Glvs)
 **Article:** [the story and the thinking behind it](https://shai-kr.github.io/data-ninja-ai-lab/blog/2026-11-15-power-bi-dashboard-in-vr-fabric-apps.html)
 
 A **Fabric App** is a new kind of item in a Fabric workspace (preview): your own web application, hosted by Fabric,
