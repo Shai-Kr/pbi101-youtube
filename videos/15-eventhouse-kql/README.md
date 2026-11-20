@@ -1,6 +1,6 @@
 # Fabric Eventhouse and KQL for Beginners: Step by Step
 
-Video: coming soon on the PBI101 channel.
+Video: https://youtu.be/-dYfZbnaf30
 
 A beginner's walk through the **Eventhouse**, the database for real-time data in Microsoft Fabric, and **KQL**, the language
 you query it with. Everything here is plain KQL that you paste into the queryset of your own database.
