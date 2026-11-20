@@ -1,0 +1,49 @@
+// A month of order history for the table the Eventstream created (same columns, same types: the time is text there).
+// Where to run it: Eventhouse -> your KQL database -> the queryset. Paste everything, put the cursor inside the command
+// below (the block that begins with .set-or-append) and click Run.
+// It adds ONE day of orders. Change dayBack and run it again for each day you want: 1, 2, 3 ... 28.
+// (A whole month in one command ran out of memory on a small Eventhouse; one day takes about two seconds.)
+// Keep the empty line under these notes: the command has to be the first line of its own block.
+
+.set-or-append OrdersLive <|
+// the query on the right of <| runs inside the database and its result is appended to the table
+let dayBack = 1;        // 1 = the 24 hours before now, 2 = the 24 hours before that, ...
+let products = datatable(Product: string, Category: string, UnitPrice: long, Popular: long) [
+    "Summit 2P Tent", "Camping", 331, 94,          "Basecamp 6P Tent", "Camping", 667, 50,
+    "Arctic Sleeping Bag", "Camping", 217, 70,     "Trailhead 45L Pack", "Hiking", 179, 120,
+    "Ridge Trekking Poles", "Hiking", 85, 85,      "Alpine Hiking Boots", "Hiking", 208, 104,
+    "Storm Shell Jacket", "Apparel", 247, 101,     "Thermal Base Layer", "Apparel", 75, 133,
+    "Summit Fleece", "Apparel", 122, 114,          "Glacier Water Bottle", "Accessories", 33, 154,
+    "Headlamp Pro", "Accessories", 56, 120,        "Trail First-Aid Kit", "Accessories", 43, 92];
+let cities = datatable(City: string, Region: string, Popular: long) [
+    "Vancouver", "North America", 78,  "Seattle", "North America", 78,  "Denver", "North America", 78,
+    "Toronto", "North America", 78,    "New York", "North America", 78,
+    "London", "Europe", 54,   "Berlin", "Europe", 54,   "Oslo", "Europe", 54,
+    "Madrid", "Europe", 54,   "Zurich", "Europe", 54,
+    "Tokyo", "Asia Pacific", 40,     "Sydney", "Asia Pacific", 40,
+    "Auckland", "Asia Pacific", 40,  "Singapore", "Asia Pacific", 40,
+    "Santiago", "Latin America", 30, "Bogota", "Latin America", 30, "Sao Paulo", "Latin America", 30];
+// a product or a city appears in its list as many times as it is popular, so a random pick follows the popularity
+let productPick = toscalar(products | mv-expand n = range(1, Popular) to typeof(long) | summarize make_list(Product));
+let cityPick = toscalar(cities | mv-expand n = range(1, Popular) to typeof(long) | summarize make_list(City));
+let payments = dynamic(["Card", "Card", "Card", "Card", "Card", "Card", "PayPal", "PayPal", "Apple Pay", "Bank transfer"]);
+let quantities = dynamic([1, 1, 1, 1, 1, 1, 1, 2, 2, 3]);
+let channels = dynamic(["Web", "Web", "App"]);
+// how busy each hour of the day is (UTC)
+let curve = dynamic([0.62, 0.55, 0.50, 0.48, 0.50, 0.56, 0.66, 0.78, 0.90, 1.00, 1.08, 1.14,
+                     1.20, 1.26, 1.32, 1.38, 1.42, 1.45, 1.42, 1.34, 1.20, 1.02, 0.84, 0.70]);
+range Minute from bin(now() - dayBack * 1d, 1m) to bin(now() - (dayBack - 1) * 1d, 1m) - 1m step 1m
+| extend Orders = toint(round(20 * todouble(curve[hourofday(Minute)])
+                  * iff(dayofweek(Minute) == 0d or dayofweek(Minute) == 6d, 1.12, 1.0) * (0.75 + 0.5 * rand())))
+| where Orders > 0
+| mv-expand i = range(1, Orders) to typeof(long)
+| extend T = Minute + totimespan(tolong(rand() * 600000000)),
+         Product = tostring(productPick[toint(rand() * array_length(productPick))]),
+         City = tostring(cityPick[toint(rand() * array_length(cityPick))]),
+         Quantity = tolong(quantities[toint(rand() * 10)])
+| lookup kind=leftouter products on Product
+| lookup kind=leftouter cities on City
+| project OrderNumber = strcat("ORD-", tolong((T - datetime(1970-01-01)) / 1ms), "-", toint(rand() * 900) + 100),
+          OrderTime = strcat(format_datetime(T, "yyyy-MM-dd"), "T", format_datetime(T, "HH:mm:ss.fff"), "Z"),
+          Product, Category, Region, City, Quantity, UnitPrice, SalesAmount = Quantity * UnitPrice,
+          PaymentMethod = tostring(payments[toint(rand() * 10)]), Channel = tostring(channels[toint(rand() * 3)])

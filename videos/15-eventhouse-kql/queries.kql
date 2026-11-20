@@ -1,0 +1,76 @@
+// Every query of the video, in the order it appears.
+// Where to run them: Eventhouse -> your KQL database -> the queryset (the item named <database>_queryset).
+// Put the cursor inside one query (queries are separated by an empty line) and click Run.
+// The table is OrdersLive: one row per order, filled by an Eventstream (see ../14-eventstream-basics).
+
+// 1. A few rows, any rows: what does the table look like?
+OrdersLive
+| take 10
+
+// 2. How many rows?
+OrdersLive
+| count
+
+// 3. Some of the rows (where), some of the columns (project)
+OrdersLive
+| where Region == "Europe"
+| project OrderTime, Product, City, SalesAmount
+
+// 4. Group: orders and sales by region, biggest first
+OrdersLive
+| summarize Orders = count(), Sales = sum(SalesAmount) by Region
+| order by Sales desc
+
+// 5. The last five minutes ... this one FAILS on purpose:
+//    "Cannot compare values of types string and datetime". OrderTime arrived as text.
+OrdersLive
+| where OrderTime > ago(5m)
+| count
+
+// 6. The fix: turn the text into a real date first
+OrdersLive
+| extend OrderTime = todatetime(OrderTime)
+| where OrderTime > ago(5m)
+| count
+
+// 7. Save the fix once, as a function (a command: it begins with a dot and changes the database).
+//    The empty line under this note matters: a command has to be the first line of its own block.
+
+.create-or-alter function Orders() {
+    OrdersLive
+    | extend OrderTime = todatetime(OrderTime)
+}
+
+// 8. The same question, the short way. Run it twice: the window moves.
+Orders
+| where OrderTime > ago(5m)
+| count
+
+// 9. A week of orders by the hour, as a chart
+Orders
+| where OrderTime > ago(7d)
+| summarize Orders = count() by bin(OrderTime, 1h)
+| render timechart
+
+// 10. The same, one line per region
+Orders
+| where OrderTime > ago(3d)
+| summarize Orders = count() by bin(OrderTime, 1h), Region
+| render timechart
+
+// 11. The five products with the most sales in the last day
+Orders
+| where OrderTime > ago(1d)
+| summarize Sales = sum(SalesAmount) by Product
+| top 5 by Sales
+| render barchart
+
+// 12. What Copilot wrote for: "Using the Orders function, show the number of orders per city in the last hour, highest first"
+Orders
+| where OrderTime > ago(1h)
+| summarize OrderCount = count() by City
+| order by OrderCount desc
+
+// 13. The retention policy as a command (the video shows it in the database details instead)
+
+.show table OrdersLive policy retention
