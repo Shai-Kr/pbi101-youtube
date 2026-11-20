@@ -1,6 +1,6 @@
 # Microsoft Fabric Eventstream for Beginners: Step by Step
 
-Video: coming soon on the PBI101 channel.
+Video: https://youtu.be/p1v7tNulW38
 
 A beginner's walk through **Eventstream**, the front door for real-time data in Microsoft Fabric. Everything is built by
 clicking; the only code is a small notebook that plays an online store and sends the orders.
