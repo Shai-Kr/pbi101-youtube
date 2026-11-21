@@ -1,6 +1,6 @@
 # Fabric Real-Time Dashboard for Beginners: Step by Step
 
-Video: coming soon on the PBI101 channel.
+Video: https://youtu.be/SFLM0AAo1ks
 
 A beginner's walk through the **Real-Time Dashboard** in Microsoft Fabric: a dashboard that looks straight into an
 Eventhouse and refreshes by itself. Everything is built by clicking; the only code is a few short KQL queries, one per tile.
