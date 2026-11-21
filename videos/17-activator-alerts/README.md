@@ -1,6 +1,6 @@
 # Fabric Activator for Beginners: Step by Step
 
-Video: coming soon on the PBI101 channel.
+Video: https://youtu.be/R2eB3odh-OQ
 
 A beginner's walk through **Activator** in Microsoft Fabric: the item that watches your events and acts when a
 condition comes true. Two rules are built by clicking, with no code: a message in Teams for every big order, and a
