@@ -1,6 +1,6 @@
 # Fabric Data Agent for Beginners: Step by Step
 
-Video: coming soon on the PBI101 channel.
+Video: https://youtu.be/aBbjOcO4z0Y
 
 A beginner's walk through the **data agent** in Microsoft Fabric: you ask a question in plain English, the agent writes
 the query, runs it on your data and answers. The video builds one on a table of orders, catches it guessing and catches
