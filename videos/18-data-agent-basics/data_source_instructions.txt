@@ -1,0 +1,5 @@
+Table OrdersLive has one row per order.
+- OrderTime is text, in UTC. Convert it with todatetime(OrderTime) before you filter or group by time.
+- For Eastern time use datetime_utc_to_local(todatetime(OrderTime), 'America/Toronto').
+- SalesAmount is Quantity times UnitPrice, in US dollars.
+- Region has four values: North America, Europe, Asia Pacific, Latin America.

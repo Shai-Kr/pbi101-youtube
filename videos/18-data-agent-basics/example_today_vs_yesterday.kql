@@ -1,0 +1,9 @@
+// Today so far, against the same hours of yesterday (Eastern time)
+let NowLocal = datetime_utc_to_local(now(), 'America/Toronto');
+let DayStart = startofday(NowLocal);
+OrdersLive
+| extend T = datetime_utc_to_local(todatetime(OrderTime), 'America/Toronto')
+| where T >= DayStart - 1d
+| where T - startofday(T) <= NowLocal - DayStart
+| summarize Sales = sum(SalesAmount), Orders = count()
+    by Day = iff(T >= DayStart, 'Today', 'Yesterday')

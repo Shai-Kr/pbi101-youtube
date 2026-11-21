@@ -1,0 +1,1 @@
+The orders of the online store, one row per order, arriving in real time. Use it for any question about orders, sales, products, categories, regions, cities, channels and payment methods.

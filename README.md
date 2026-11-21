@@ -32,6 +32,7 @@ SELECT magic FROM your_data;
 | 15 | [Fabric Eventhouse and KQL for Beginners: Step by Step](https://youtu.be/-dYfZbnaf30) | The Eventhouse and its KQL database, then KQL one step at a time: take, count, where, project, summarize, ago, bin, render, a stored function (every query of the video + a script that adds a day of orders) | [videos/15-eventhouse-kql](videos/15-eventhouse-kql) |
 | 16 | [Fabric Real-Time Dashboard for Beginners: Step by Step](https://youtu.be/SFLM0AAo1ks) | A Real-Time Dashboard from an empty page: four tiles (time chart, KPI, bar chart, table), a Region filter with a parameter, automatic refresh (every tile query, ready to paste) | [videos/16-realtime-dashboard](videos/16-realtime-dashboard) |
 | 17 | [Fabric Activator for Beginners: Step by Step](https://youtu.be/R2eB3odh-OQ) | Activator from an empty item: connect an Eventstream, a rule for big orders, an object per region, a rule for a region that went quiet, both with a Teams message (every click and the settings of both rules) | [videos/17-activator-alerts](videos/17-activator-alerts) |
+| 18 | Fabric Data Agent for Beginners: Step by Step (video coming soon) | A data agent from an empty item on a KQL database: three questions, a guess and a wrong answer, then agent instructions, data source instructions and one example query (every text that was pasted) | [videos/18-data-agent-basics](videos/18-data-agent-basics) |
 
 ## How to use the materials
 
