@@ -1,0 +1,42 @@
+// Every query of the video: one per tile, plus the query behind the Region filter.
+// Where they go: Real-Time Dashboard -> Add visual -> the Query editor at the bottom of the tile editor -> Run -> Apply.
+// (Paste ONE query per tile. The names with an underscore are dashboard parameters, so these run inside a dashboard.)
+// They read from a function named Orders: the orders table with the time as a real date. If you don't have it yet,
+// create it once in the KQL database's queryset (the block below must stay on its own, under an empty line).
+
+.create-or-alter function Orders() {
+    OrdersLive
+    | extend OrderTime = todatetime(OrderTime)
+}
+
+// Tile 1 · Time chart · "Orders per minute"
+Orders
+| where OrderTime > ago(30m)
+| summarize Orders = count() by bin(OrderTime, 1m), Region
+
+// Tile 2 · KPI (shape: Number, unit label "orders", conditional formatting off) · "Orders in the last 5 minutes"
+Orders
+| where OrderTime > ago(5m)
+| count
+
+// Tile 3 · Bar chart · "Top 5 products" · follows the dashboard's built-in Time range (_startTime, _endTime)
+Orders
+| where OrderTime between (_startTime .. _endTime)
+| summarize Sales = sum(SalesAmount) by Product
+| top 5 by Sales
+
+// Tile 4 · Table · "Latest orders"
+Orders
+| top 8 by OrderTime desc
+| project OrderTime, Product, City, Region, SalesAmount
+
+// The Region filter: Add parameter -> Label "Region", Variable name "_region", Source = Query, this query,
+// Value column = Region, tick 'Add "Select all" value', Default value = Select all.
+Orders
+| distinct Region
+
+// Tile 1 again, now connected to the filter (one more line). "Select all" sends an empty value, so all rows stay.
+Orders
+| where OrderTime > ago(30m)
+| where isempty(_region) or Region == _region
+| summarize Orders = count() by bin(OrderTime, 1m), Region

@@ -30,6 +30,7 @@ SELECT magic FROM your_data;
 | 13 | [I Put My Power BI Dashboard in VR (Fabric Apps Guide)](https://youtu.be/wNoeba0Glvs) | Fabric Apps, step by step (what they are, what you need, a simple app built by an AI agent from one prompt, what it costs on your capacity), then the extreme: a VR room on a real semantic model, with boards, a basket, scales, Saturn and a Fabric data agent (the prompts, the whole app project, install steps) | [videos/13-fabric-apps-vr](videos/13-fabric-apps-vr) |
 | 14 | [Microsoft Fabric Eventstream for Beginners: Step by Step](https://youtu.be/p1v7tNulW38) | Eventstream from an empty workspace, click by click: a custom endpoint source, the data preview, an Eventhouse table as the destination, and a filter that sends big orders to a second table (the store notebook + the steps) | [videos/14-eventstream-basics](videos/14-eventstream-basics) |
 | 15 | [Fabric Eventhouse and KQL for Beginners: Step by Step](https://youtu.be/-dYfZbnaf30) | The Eventhouse and its KQL database, then KQL one step at a time: take, count, where, project, summarize, ago, bin, render, a stored function (every query of the video + a script that adds a day of orders) | [videos/15-eventhouse-kql](videos/15-eventhouse-kql) |
+| 16 | Fabric Real-Time Dashboard for Beginners: Step by Step | A Real-Time Dashboard from an empty page: four tiles (time chart, KPI, bar chart, table), a Region filter with a parameter, automatic refresh (every tile query, ready to paste) | [videos/16-realtime-dashboard](videos/16-realtime-dashboard) |
 
 ## How to use the materials
 
