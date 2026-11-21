@@ -31,6 +31,7 @@ SELECT magic FROM your_data;
 | 14 | [Microsoft Fabric Eventstream for Beginners: Step by Step](https://youtu.be/p1v7tNulW38) | Eventstream from an empty workspace, click by click: a custom endpoint source, the data preview, an Eventhouse table as the destination, and a filter that sends big orders to a second table (the store notebook + the steps) | [videos/14-eventstream-basics](videos/14-eventstream-basics) |
 | 15 | [Fabric Eventhouse and KQL for Beginners: Step by Step](https://youtu.be/-dYfZbnaf30) | The Eventhouse and its KQL database, then KQL one step at a time: take, count, where, project, summarize, ago, bin, render, a stored function (every query of the video + a script that adds a day of orders) | [videos/15-eventhouse-kql](videos/15-eventhouse-kql) |
 | 16 | [Fabric Real-Time Dashboard for Beginners: Step by Step](https://youtu.be/SFLM0AAo1ks) | A Real-Time Dashboard from an empty page: four tiles (time chart, KPI, bar chart, table), a Region filter with a parameter, automatic refresh (every tile query, ready to paste) | [videos/16-realtime-dashboard](videos/16-realtime-dashboard) |
+| 17 | Fabric Activator for Beginners: Step by Step | Activator from an empty item: connect an Eventstream, a rule for big orders, an object per region, a rule for a region that went quiet, both with a Teams message (every click and the settings of both rules) | [videos/17-activator-alerts](videos/17-activator-alerts) |
 
 ## How to use the materials
 
