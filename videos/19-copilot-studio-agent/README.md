@@ -1,6 +1,6 @@
 # Copilot Studio Agent for Beginners: Fabric Data in Teams
 
-Video: coming soon on the PBI101 channel.
+Video: https://youtu.be/Xoq4z3aTRNA
 
 A beginner's walk through **Microsoft Copilot Studio**: an agent that sits in Microsoft Teams and answers from your data
 in Microsoft Fabric. It is built by clicking, with no code: instructions, one tool, a test, a channel, Publish.

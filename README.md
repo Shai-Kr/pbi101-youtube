@@ -33,7 +33,7 @@ SELECT magic FROM your_data;
 | 16 | [Fabric Real-Time Dashboard for Beginners: Step by Step](https://youtu.be/SFLM0AAo1ks) | A Real-Time Dashboard from an empty page: four tiles (time chart, KPI, bar chart, table), a Region filter with a parameter, automatic refresh (every tile query, ready to paste) | [videos/16-realtime-dashboard](videos/16-realtime-dashboard) |
 | 17 | [Fabric Activator for Beginners: Step by Step](https://youtu.be/R2eB3odh-OQ) | Activator from an empty item: connect an Eventstream, a rule for big orders, an object per region, a rule for a region that went quiet, both with a Teams message (every click and the settings of both rules) | [videos/17-activator-alerts](videos/17-activator-alerts) |
 | 18 | [Fabric Data Agent for Beginners: Step by Step](https://youtu.be/aBbjOcO4z0Y) | A data agent from an empty item on a KQL database: three questions, a guess and a wrong answer, then agent instructions, data source instructions and one example query (every text that was pasted) | [videos/18-data-agent-basics](videos/18-data-agent-basics) |
-| 19 | Copilot Studio Agent for Beginners: Fabric Data in Teams (video coming soon) | A Copilot Studio agent from an empty page: instructions, a Fabric data agent as its only tool, a test, one fix, a Teams channel, Publish (the instructions and every step) | [videos/19-copilot-studio-agent](videos/19-copilot-studio-agent) |
+| 19 | [Copilot Studio Agent for Beginners: Fabric Data in Teams](https://youtu.be/Xoq4z3aTRNA) | A Copilot Studio agent from an empty page: instructions, a Fabric data agent as its only tool, a test, one fix, a Teams channel, Publish (the instructions and every step) | [videos/19-copilot-studio-agent](videos/19-copilot-studio-agent) |
 
 ## How to use the materials
 
