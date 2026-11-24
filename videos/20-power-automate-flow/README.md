@@ -1,6 +1,6 @@
 # Power Automate for Beginners: Fabric Alert to a Teams Agent
 
-Video: coming soon on the PBI101 channel.
+Video: https://youtu.be/KksM2Do3QkY
 
 A beginner's walk through **Microsoft Power Automate**, built around one job: when a rule in Microsoft Fabric notices that
 a region stopped ordering, a flow posts the alert into a Teams chat with an AI agent, and the agent answers by itself.
