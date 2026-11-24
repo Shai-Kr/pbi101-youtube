@@ -1,0 +1,21 @@
+Flow 1: "Ask the orders agent" (instant flow, a button with one text input called Region)
+Action: Microsoft Teams, Post message in a chat or channel
+  Post as:    User
+  Post in:    Group chat
+  Group chat: Enter custom value, then the key of the chat (see the README)
+  Message:
+
+How many orders did we get in the last hour in [Region]?
+
+  [Region] = dynamic content, the input of the trigger "Manually trigger a flow"
+
+
+Flow 2: "Quiet region alert" (automated flow, trigger "When an activator rule is triggered")
+Trigger: Connection String = the string copied from the custom action in Fabric Activator
+Action: the same Teams action, with the same three settings
+  Message:
+
+Alert from Fabric: orders stopped in [Object instance ID]. Show me the last three orders from [Object instance ID], with their times.
+
+  [Object instance ID] = dynamic content of the trigger. The rule in the video watches an object called Region, so this
+  value is the name of the region that went quiet.
