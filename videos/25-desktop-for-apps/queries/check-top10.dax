@@ -1,0 +1,14 @@
+EVALUATE
+CALCULATETABLE(
+    TOPN(
+        10,
+        SUMMARIZECOLUMNS(
+            'Products'[Product],
+            "Revenue", [Revenue],
+            "Margin", [Margin %]
+        ),
+        [Revenue], DESC
+    ),
+    'Date'[Year] = 2026
+)
+ORDER BY [Revenue] DESC

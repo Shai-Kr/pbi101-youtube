@@ -1,0 +1,9 @@
+DEFINE
+VAR _Core =
+    SUMMARIZECOLUMNS(
+        'Products'[Product],
+        /*__FILTER_ARGUMENTS__*/"Revenue", [Revenue],
+        "Margin %", [Margin %]
+    )
+EVALUATE
+TOPN(10, _Core, [Revenue], DESC)

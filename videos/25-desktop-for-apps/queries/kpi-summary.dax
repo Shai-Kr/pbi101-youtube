@@ -1,0 +1,13 @@
+EVALUATE
+CALCULATETABLE(
+    ROW(
+        "Revenue", [Revenue],
+        "Revenue PY", [Revenue PY],
+        "Revenue YoY %", [Revenue YoY %],
+        "Orders", [Orders],
+        "Orders PY", CALCULATE([Orders], SAMEPERIODLASTYEAR('Date'[Date])),
+        "Margin %", [Margin %],
+        "Margin % PY", CALCULATE([Margin %], SAMEPERIODLASTYEAR('Date'[Date]))
+    )
+    /*__FILTER_ARGUMENTS__*/
+)

@@ -1,0 +1,16 @@
+EVALUATE
+UNION(
+    ROW("Scope", "All",
+        "Revenue", [Revenue], "Revenue PY", [Revenue PY], "YoY", [Revenue YoY %],
+        "Orders", [Orders], "Margin", [Margin %]),
+    CALCULATETABLE(
+        ROW("Scope", "2026",
+            "Revenue", [Revenue], "Revenue PY", [Revenue PY], "YoY", [Revenue YoY %],
+            "Orders", [Orders], "Margin", [Margin %]),
+        'Date'[Year] = 2026),
+    CALCULATETABLE(
+        ROW("Scope", "2025",
+            "Revenue", [Revenue], "Revenue PY", [Revenue PY], "YoY", [Revenue YoY %],
+            "Orders", [Orders], "Margin", [Margin %]),
+        'Date'[Year] = 2025)
+)

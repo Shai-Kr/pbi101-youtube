@@ -1,0 +1,22 @@
+The four messages I sent to the agent in Power BI Desktop for Apps (preview), in order.
+The semantic model attached to the first one: Aurora Sales (a demo model: Sales, Products, Regions, Date; measures
+Revenue, Revenue PY, Revenue YoY %, Orders, Margin %).
+
+1. The first build (about 6.5 minutes)
+
+Build a sales command center for Aurora. Show revenue, orders and margin percent as KPI cards with the change against last year, a monthly revenue trend, revenue by region, and a table of the top 10 products. Add filters for year, region and category.
+
+
+2. With the table selected in Edit mode (about 35 seconds)
+
+This table says ranked by revenue, but the rows are not sorted. Sort it by revenue, highest first, and add a rank number in front of each product.
+
+
+3. A new behavior (almost 7 minutes)
+
+When I click a product in the table, open a panel on the right with that product's monthly revenue for the selected year, and its share of total revenue.
+
+
+4. After checking the panel's numbers (about 3 minutes until it said it was done; the panel was right after about a minute)
+
+The product panel shows wrong numbers. For Storm Shell Jacket it shows 1,608,314, but that is the revenue of the first product in the table. Show the selected product's own revenue and its own share.

@@ -1,0 +1,16 @@
+DEFINE
+VAR _TotalRevenue = CALCULATE(
+    [Revenue],
+    REMOVEFILTERS('Products'[Product])
+    /*__TOTAL_SCOPE_FILTERS*/
+)
+VAR _ProductRevenueScoped = CALCULATE(
+    [Revenue],
+    /*__PRODUCT_SCOPE_FILTERS*/
+)
+EVALUATE
+ROW(
+    "Product Revenue", _ProductRevenueScoped,
+    "Total Revenue", _TotalRevenue,
+    "Revenue Share", DIVIDE(_ProductRevenueScoped, _TotalRevenue)
+)

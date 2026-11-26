@@ -1,0 +1,7 @@
+EVALUATE
+SUMMARIZECOLUMNS(
+    'Date'[Month],
+    'Date'[Month Number],
+    /*__FILTER_ARGUMENTS__*/"Revenue", [Revenue]
+)
+ORDER BY 'Date'[Month Number]

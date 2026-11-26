@@ -1,0 +1,12 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "mark": {"type": "area", "line": {"color": "#58A6FF", "strokeWidth": 2.5}, "color": "#58A6FF", "opacity": 0.16},
+  "encoding": {
+    "x": {"field": "Month", "type": "temporal", "timeUnit": "yearmonth", "axis": {"title": null, "labelAngle": 0, "format": "%b"}},
+    "y": {"field": "Revenue", "type": "quantitative", "axis": {"title": null, "format": "$~s", "grid": true}},
+    "tooltip": [
+      {"field": "Month", "type": "temporal", "timeUnit": "month", "title": "Month"},
+      {"field": "Revenue", "type": "quantitative", "format": "$,.0f"}
+    ]
+  }
+}

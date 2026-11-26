@@ -1,0 +1,17 @@
+DEFINE
+VAR _TotalRevenue = CALCULATE(
+    [Revenue],
+    REMOVEFILTERS('Products'),
+    TREATAS({2026}, 'Date'[Year])
+)
+VAR _ProductRevenueScoped = CALCULATE(
+    [Revenue],
+    TREATAS({"Summit 2P Tent"}, 'Products'[Product]),
+    TREATAS({2026}, 'Date'[Year])
+)
+EVALUATE
+ROW(
+    "Product Revenue", _ProductRevenueScoped,
+    "Total Revenue", _TotalRevenue,
+    "Revenue Share", DIVIDE(_ProductRevenueScoped, _TotalRevenue)
+)
