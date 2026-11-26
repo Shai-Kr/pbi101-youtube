@@ -35,6 +35,7 @@ SELECT magic FROM your_data;
 | 18 | [Fabric Data Agent for Beginners: Step by Step](https://youtu.be/aBbjOcO4z0Y) | A data agent from an empty item on a KQL database: three questions, a guess and a wrong answer, then agent instructions, data source instructions and one example query (every text that was pasted) | [videos/18-data-agent-basics](videos/18-data-agent-basics) |
 | 19 | [Copilot Studio Agent for Beginners: Fabric Data in Teams](https://youtu.be/Xoq4z3aTRNA) | A Copilot Studio agent from an empty page: instructions, a Fabric data agent as its only tool, a test, one fix, a Teams channel, Publish (the instructions and every step) | [videos/19-copilot-studio-agent](videos/19-copilot-studio-agent) |
 | 20 | [Power Automate for Beginners: Fabric Alert to a Teams Agent](https://youtu.be/KksM2Do3QkY) | Two flows by clicking: a button flow that posts a question into a Teams chat as you, then the same action started by a Fabric Activator rule through a custom action (every setting and both message texts) | [videos/20-power-automate-flow](videos/20-power-automate-flow) |
+| 25 | [Power BI Desktop for Apps: Build a Fabric App with AI](https://youtu.be/xjxbHfnINy0) | Power BI Desktop for Apps (preview): a semantic model, a few sentences, and an agent builds a Fabric app; two mistakes it made and how they were caught (my prompts, the DAX the agent wrote before and after the fixes, two check queries) | [videos/25-desktop-for-apps](videos/25-desktop-for-apps) |
 
 ## How to use the materials
 

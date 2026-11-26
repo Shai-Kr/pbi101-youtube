@@ -1,6 +1,6 @@
 # Power BI Desktop for Apps: Build a Fabric App with AI
 
-Video: coming soon on the PBI101 channel.
+Video: https://youtu.be/xjxbHfnINy0
 
 **Power BI Desktop for Apps (preview)** is a separate program that opens from Power BI Desktop. You pick a semantic model
 that is published in the Power BI service, describe the app you want in plain words, and an agent writes a **Fabric app**
